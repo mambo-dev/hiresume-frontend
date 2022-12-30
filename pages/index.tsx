@@ -1,86 +1,156 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const Home: NextPage = () => {
+  const [isFixed, setIsFixed] = useState(false);
+
+  useEffect(() => {
+    function handleScroll() {
+      if (window.scrollY > 50) {
+        setIsFixed(true);
+      } else {
+        setIsFixed(false);
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <div className="flex min-h-screen flex-col bg-stone-50 ">
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Hiresume</title>
+        <link rel="icon" href="/images/logo.png" />
       </Head>
-
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and its API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      <header
+        className={`${
+          isFixed ? "fixed" : ""
+        } transition-all ease-in-out w-full py-2 px-2 bg-white h-14 shadow flex justify-between items-center`}
+      >
+        <div className="h-full w-36 ">
+          <img
+            src="/images/logo-bgless.png"
+            className="w-full h-3/4 object-cover"
+            alt="logo"
+          />
+        </div>
+        <nav className="h-full flex justify-between gap-x-4 px-1">
+          <Link href="/auth/login">
+            <button className=" inline-flex items-center justify-center shadow bg-transparent border rounded border-gray-300 focus:shadow-md focus:shadow-gray-300 p-2 w-28 ">
+              Login
+            </button>
+          </Link>
+          <Link href="/auth/signup">
+            <button className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-28 ">
+              Sign up
+            </button>
+          </Link>
+        </nav>
+      </header>
+      <main className="w-full   h-[500px] flex items-center  bg-gradient-to-r from-gray-300 to-gray-200   ">
+        <div className="w-full h-full relative">
+          <img
+            src="https://images.unsplash.com/photo-1552581234-26160f608093?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+            alt="banner"
+            className=" object-cover h-full w-full "
+          />
+          <div className="w-full absolute   bg-gradient-to-r from-gray-300 via-gray-200   right-3/4 top-0 left-0  bottom-0 h-full flex flex-col items-start justify-center ">
+            <div className="w-1/2 h-full px-2 py-20 flex flex-col gap-y-4">
+              <h1 className="text-teal-800 font-bold text-5xl">
+                Welcome to Hiresume
+              </h1>
+              <p className="text-gray-900 font-medium text-xl">
+                Hiresume is a freelance marketplace that connects businesses and
+                individuals with talented freelancers from around the world. On
+                Hiresume, you can browse and apply for a wide range of jobs in
+                various industries, or hire freelancers for your own projects.
+              </p>
+              <div className="w-full flex items-center gap-x-4 justify-start h-20 ">
+                <button className=" inline-flex items-center justify-center shadow bg-transparent border rounded border-gray-800 focus:shadow-md focus:shadow-gray-300 p-2 w-48 ">
+                  Hire talent
+                </button>
+                <button className=" inline-flex items-center justify-center shadow text-gray-100 shadow-teal-500 bg-teal-600 rounded focus:shadow-md focus:shadow-teal-400 p-2  w-48 ">
+                  find job
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
+      <div className="w-full h-[600px]  pt-14 px-28  flex gap-x-4 ">
+        <div className="w-1/2 h-full flex flex-col items-start gap-y-4">
+          <h2 className="font-bold text-teal-800 text-3xl">
+            About the platform
+          </h2>
+          <p className="text-xl font-medium text-gray-800">
+            The platform is easy to use and offers a variety of tools and
+            resources to help you find the perfect match for your needs. Whether
+            you're a business owner looking to hire skilled professionals for
+            your team, or a freelancer seeking new opportunities, Hiresume is
+            the perfect platform for connecting with like-minded individuals and
+            organizations.
+          </p>
+        </div>
+        <div className="w-1/2 h-3/4 ">
+          <img
+            src="https://images.unsplash.com/photo-1552960504-34e1e1be3f53?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+            alt="banner"
+            className=" rounded shadow object-cover h-full w-full "
+          />
+        </div>
+      </div>
+      <div className="w-full h-[600px]  px-28  flex gap-x-4 ">
+        <div className="w-1/2 h-3/4 ">
+          <img
+            src="https://images.unsplash.com/photo-1557425529-b1ae9c141e7d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+            alt="banner"
+            className=" rounded shadow object-cover h-full w-full "
+          />
+        </div>
+        <div className="w-1/2 h-full  flex flex-col items-start gap-y-8">
+          <h2 className="font-bold text-teal-800 text-3xl">
+            For the Freelancers
+          </h2>
+          <p className="text-xl font-medium text-gray-800">
+            Are you a talented and skilled freelancer looking for new
+            opportunities to showcase your talents and skills? Look no further
+            than Hiresume! Our freelance marketplace is designed to connect
+            businesses and individuals with top-notch freelancers from around
+            the world. With a wide range of job opportunities in various
+            industries, Hiresume is the perfect platform for finding your next
+            gig.
+          </p>
+        </div>
+      </div>
+      <div className="w-full h-[600px]  px-28  flex gap-x-4 ">
+        <div className="w-1/2 h-full flex flex-col items-start gap-y-4">
+          <h2 className="font-bold text-teal-800 text-3xl">For the clients</h2>
+          <p className="text-xl font-medium text-gray-800">
+            Are you a business owner or manager looking to hire talented and
+            skilled freelancers for your team? Look no further than Hiresume!
+            Our freelance marketplace is designed to connect you with top-notch
+            professionals from around the world. With a wide range of
+            freelancers available in various industries, you're sure to find the
+            perfect match for your project needs.
+          </p>
+        </div>
+        <div className="w-1/2 h-3/4 ">
+          <img
+            src="https://images.unsplash.com/photo-1552960504-34e1e1be3f53?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+            alt="banner"
+            className=" rounded shadow object-cover h-full w-full "
+          />
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
