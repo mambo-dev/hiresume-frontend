@@ -1,6 +1,7 @@
 const initialState = {
-  user: "",
+  user: {},
   loading: true,
+  isLoggedIn: false,
 };
 
 const authReducer = (state = initialState, action: any) => {
@@ -10,12 +11,14 @@ const authReducer = (state = initialState, action: any) => {
         ...state,
         user: action.payload,
         loading: false,
+        isLoggedIn: false,
       };
     case "login":
       return {
         ...state,
-        user: action.payload,
+        user: { ...action.payload },
         loading: false,
+        isLoggedIn: true,
       };
 
     default:

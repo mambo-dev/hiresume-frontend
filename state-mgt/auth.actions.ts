@@ -8,6 +8,9 @@ export const signup = (userData: any) => {
 export const login = (userData: any) => {
   return {
     type: "login",
-    payload: userData,
+    payload: {
+      ...userData,
+      isLoggedIn: false,
+    },
   };
 };

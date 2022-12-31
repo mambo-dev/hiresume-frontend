@@ -34,7 +34,7 @@ export default function SignUp() {
         `http://localhost:4000/auth/signup`,
         values
       );
-
+      console.log(signupResponse);
       if (signupResponse) {
         setSuccess(true);
         dispatch(signup(signupResponse.data));
@@ -56,7 +56,7 @@ export default function SignUp() {
       if (loginResponse && signupResponse.data.user_role === "freelancer") {
         setLoading(false);
         setTimeout(() => {
-          router.push("/freelancer");
+          router.push("/freelancer/onboarding");
           setSuccess(false);
         }, 3000);
       } else {
@@ -67,8 +67,15 @@ export default function SignUp() {
 
         setLoading(false);
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.log(error);
+      setLoading(false);
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        {
+          message: error.response.data.message,
+        },
+      ]);
     }
   }
 

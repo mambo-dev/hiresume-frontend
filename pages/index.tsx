@@ -54,7 +54,7 @@ const Home: NextPage = () => {
           </Link>
         </nav>
       </header>
-      <main className="w-full   h-[500px] flex items-center  bg-gradient-to-r from-gray-300 to-gray-200   ">
+      <main className="w-full h-screen  md:h-[500px] flex items-center  bg-gradient-to-r from-gray-300 to-gray-200   ">
         <div className="w-full h-full relative">
           <img
             src="https://images.unsplash.com/photo-1552581234-26160f608093?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
@@ -62,7 +62,7 @@ const Home: NextPage = () => {
             className=" object-cover h-full w-full "
           />
           <div className="w-full absolute   bg-gradient-to-r from-gray-300 via-gray-200   right-3/4 top-0 left-0  bottom-0 h-full flex flex-col items-start justify-center ">
-            <div className="w-1/2 h-full px-2 py-20 flex flex-col gap-y-4">
+            <div className="w-full md:w-1/2 h-full px-2 py-20 flex flex-col gap-y-4">
               <h1 className="text-teal-800 font-bold text-5xl">
                 Welcome to Hiresume
               </h1>
@@ -84,8 +84,8 @@ const Home: NextPage = () => {
           </div>
         </div>
       </main>
-      <div className="w-full h-[600px]  pt-14 px-28  flex gap-x-4 ">
-        <div className="w-1/2 h-full flex flex-col items-start gap-y-4">
+      <div className="w-full  h-screen md:h-[600px] pt-5 md:pt-14 px-2 md:px-28 gap-y-4 flex flex-col-reverse md:flex-row gap-x-4 ">
+        <div className=" w-full md:w-1/2 h-full flex flex-col items-start gap-y-4">
           <h2 className="font-bold text-teal-800 text-3xl">
             About the platform
           </h2>
@@ -98,7 +98,7 @@ const Home: NextPage = () => {
             organizations.
           </p>
         </div>
-        <div className="w-1/2 h-3/4 ">
+        <div className="w-full md:w-1/2 h-3/4 ">
           <img
             src="https://images.unsplash.com/photo-1552960504-34e1e1be3f53?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
             alt="banner"
@@ -106,15 +106,15 @@ const Home: NextPage = () => {
           />
         </div>
       </div>
-      <div className="w-full h-[600px]  px-28  flex gap-x-4 ">
-        <div className="w-1/2 h-3/4 ">
+      <div className="w-full h-screen md:h-[600px] pt-5 md:pt-0 px-2 md:px-28 gap-y-4 flex flex-col md:flex-row gap-x-4 ">
+        <div className="w-full md:w-1/2 h-3/4 ">
           <img
             src="https://images.unsplash.com/photo-1557425529-b1ae9c141e7d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
             alt="banner"
             className=" rounded shadow object-cover h-full w-full "
           />
         </div>
-        <div className="w-1/2 h-full  flex flex-col items-start gap-y-8">
+        <div className="w-full md:w-1/2  h-full  flex flex-col items-start gap-y-8">
           <h2 className="font-bold text-teal-800 text-3xl">
             For the Freelancers
           </h2>
@@ -129,8 +129,8 @@ const Home: NextPage = () => {
           </p>
         </div>
       </div>
-      <div className="w-full h-[600px]  px-28  flex gap-x-4 ">
-        <div className="w-1/2 h-full flex flex-col items-start gap-y-4">
+      <div className="w-full h-screen md:h-[600px] mb-2 md:mb-0 pt-8 md:pt-0 px-2 md:px-28 gap-y-4 flex flex-col-reverse md:flex-row  gap-x-4 ">
+        <div className="w-full md:w-1/2  h-full flex flex-col items-start gap-y-4">
           <h2 className="font-bold text-teal-800 text-3xl">For the clients</h2>
           <p className="text-xl font-medium text-gray-800">
             Are you a business owner or manager looking to hire talented and
@@ -141,7 +141,7 @@ const Home: NextPage = () => {
             perfect match for your project needs.
           </p>
         </div>
-        <div className="w-1/2 h-3/4 ">
+        <div className="w-full md:w-1/2  h-3/4 ">
           <img
             src="https://images.unsplash.com/photo-1552960504-34e1e1be3f53?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
             alt="banner"
