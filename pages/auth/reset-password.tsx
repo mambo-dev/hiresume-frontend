@@ -7,53 +7,43 @@ import useForm from "../../hooks/form";
 import { login } from "../../state-mgt/auth.actions";
 import { error, errorSvg, successSvg, Toast } from "./signup";
 
-export default function LogIn() {
+export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const [success, setSuccess] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
   const intialValues = {
-    username: "",
-    password: "",
+    email: "",
+    passwordResetCode: "",
+    newPassword: "",
+    confirmNewPassword: "",
   };
 
-  const handleLoginAxios = async (values: any) => {
+  const handleResetPassword = async (values: any) => {
     try {
       setLoading(true);
-      const loginResponse = await axios.post(
-        `http://localhost:4000/auth/login`,
+      const resetPassword = await axios.post(
+        `http://localhost:4000/reset-password`,
         {
-          username: values.username,
-          password: values.password,
+          email: values.email,
+          passwordResetCode: values.passwordResetCode,
+          newPassword: values.newPassword,
+          confirmNewPassword: values.confirmNewPassword,
         },
         {
           withCredentials: true,
         }
       );
 
-      dispatch(login(loginResponse.data));
-
-      if (loginResponse) {
+      if (resetPassword) {
         setTimeout(() => {
           setLoading(false);
           setSuccess(true);
         }, 3000);
-      }
 
-      if (loginResponse && loginResponse.data.user_role === "freelancer") {
         setTimeout(() => {
-          router.push("/freelancer");
-          setSuccess(false);
-        }, 5000);
-      } else if (loginResponse && loginResponse.data.user_role === "client") {
-        setTimeout(() => {
-          router.push("/client");
-          setSuccess(false);
-        }, 5000);
-      } else {
-        setTimeout(() => {
-          router.push("/admin");
+          router.push("/auth/login");
           setSuccess(false);
         }, 5000);
       }
@@ -62,13 +52,15 @@ export default function LogIn() {
       setErrors((prevErrors) => [
         ...prevErrors,
         {
-          message: "could not login into your account",
+          message: "oops something went wrong",
         },
       ]);
+      setLoading(false);
+      setSuccess(false);
     }
   };
 
-  const handleLoginValidation = (values: any) => {
+  const handleResetValidation = (values: any) => {
     const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     Object.keys(values).map((value) => {
       if (values[value].trim() === "") {
@@ -87,11 +79,21 @@ export default function LogIn() {
         ]);
       }
     });
+    if (values.newPassword !== values.confirmNewPassword) {
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        {
+          message: "passwords must match",
+        },
+      ]);
+    }
   };
+
   const { values, handleChange, handleSubmit } = useForm(
     intialValues,
-    handleLoginAxios
+    handleResetPassword
   );
+
   return (
     <div className="relative h-full w-full overflow-y-hidden flex gap-x-2 items-center">
       {errors.length > 0 && (
@@ -108,7 +110,7 @@ export default function LogIn() {
       {success && (
         <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
           <Toast
-            message="succesfully logged in"
+            message="password reset successful"
             className="border-l-8 border-l-green-600 text-green-800 font-bold"
             svg={successSvg}
           />
@@ -127,7 +129,7 @@ export default function LogIn() {
                 >
                   <span className="hidden">Loading...</span>
                 </div>
-                <span>loggin in</span>
+                <span>reseting password</span>
               </div>
             }
           />
@@ -139,15 +141,20 @@ export default function LogIn() {
           src="https://images.unsplash.com/photo-1660721858662-9ad9f37447f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
         />
       </div>
-      <div className=" w-full px-2 md:px-5  lg:w-1/2 h-screen py-28 md:py-28  lg:px-10 flex  flex-col gap-y-2">
+      <div className=" w-full px-2 md:px-5  lg:w-1/2 h-screen py-20 md:py-20  lg:px-10 flex  flex-col gap-y-4">
         <div className="w-full flex flex-col items-center justify-center">
-          <h1 className="text-teal-800 text-3xl font-semibold">Welcome back</h1>
+          <h1 className="text-teal-800 text-3xl font-semibold">
+            Almost done...
+          </h1>
+          <p className="text-gray-700 font-semibold text-sm">
+            kindly enter the email you signed up with
+          </p>
         </div>
         <div className="w-full h-full flex items-center justify-center">
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              handleLoginValidation(values);
+              handleResetValidation(values);
 
               setTimeout(() => {
                 setErrors([]);
@@ -164,18 +171,38 @@ export default function LogIn() {
                 <label>email</label>
                 <input
                   type="email"
-                  name="username"
-                  value={values.username}
+                  name="email"
+                  value={values.email}
                   onChange={handleChange}
                   className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
                 />
               </div>
               <div className="flex flex-col w-full">
-                <label>password</label>
+                <label>reset code </label>
+                <input
+                  type="text"
+                  name="passwordResetCode"
+                  value={values.passwordResetCode}
+                  onChange={handleChange}
+                  className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label>new password</label>
                 <input
                   type="password"
-                  name="password"
-                  value={values.password}
+                  name="newPassword"
+                  value={values.newPassword}
+                  onChange={handleChange}
+                  className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label>confirm new password</label>
+                <input
+                  type="password"
+                  name="confirmNewPassword"
+                  value={values.confirmNewPassword}
                   onChange={handleChange}
                   className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
                 />
@@ -201,24 +228,9 @@ export default function LogIn() {
                   type="submit"
                   className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
                 >
-                  log in
+                  send reset code
                 </button>
               )}
-            </div>
-            <div className="px-2 md:px-20 py-2 flex flex-col items-center justify-start text-blue-600">
-              <div className="w-full flex items-center justify-start">
-                <Link href="/auth/signup">
-                  <p className="hover:underline-offset-1 hover:underline">
-                    dont have an account? create one
-                  </p>
-                </Link>
-              </div>
-
-              <div className="w-full px-2 flex items-center justify-end">
-                <Link href="/auth/forgot-password">
-                  <p className="hover:underline">forgot password?</p>
-                </Link>
-              </div>
             </div>
           </form>
         </div>

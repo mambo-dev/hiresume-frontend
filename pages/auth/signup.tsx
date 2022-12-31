@@ -6,7 +6,7 @@ import useForm from "../../hooks/form";
 import { login, signup } from "../../state-mgt/auth.actions";
 import { motion } from "framer-motion";
 
-type error = {
+export type error = {
   message?: String;
 };
 export default function SignUp() {
@@ -170,7 +170,7 @@ export default function SignUp() {
                 setToast(false);
                 setErrors([]);
               }, 3000);
-              console.log(errors.length);
+
               if (errors.length <= 0) {
                 handleSubmit(e);
               }
@@ -235,7 +235,6 @@ export default function SignUp() {
                 <select
                   id="country"
                   name="country"
-                  defaultValue="Kenya"
                   onChange={handleChange}
                   value={values.country}
                   autoComplete="country-name"
@@ -315,7 +314,7 @@ export default function SignUp() {
   );
 }
 
-function Toast({ message, className, svg, body }: any) {
+export function Toast({ message, className, svg, body }: any) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
@@ -334,7 +333,7 @@ function Toast({ message, className, svg, body }: any) {
   );
 }
 
-const errorSvg = (
+export const errorSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
@@ -351,7 +350,7 @@ const errorSvg = (
   </svg>
 );
 
-const successSvg = (
+export const successSvg = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
