@@ -3,11 +3,11 @@ import type { AppProps } from "next/app";
 import { wrapperStore } from "../state-mgt/store";
 import { Provider } from "react-redux";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  const { store, props } = wrapperStore.useWrappedStore(pageProps);
+function MyApp({ Component, ...rest }: AppProps) {
+  const { store, props } = wrapperStore.useWrappedStore(rest);
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <Component {...rest} />
     </Provider>
   );
 }

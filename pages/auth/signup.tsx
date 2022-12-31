@@ -4,10 +4,18 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux/es/exports";
 import useForm from "../../hooks/form";
 import { login, signup } from "../../state-mgt/auth.actions";
+import { motion } from "framer-motion";
 
+type error = {
+  message?: String;
+};
 export default function SignUp() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<error[]>([]);
+  const [toast, setToast] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const initialValues = {
     email: "",
@@ -21,12 +29,14 @@ export default function SignUp() {
 
   async function handleSignup(values: any) {
     try {
+      setLoading(true);
       const signupResponse = await axios.post(
         `http://localhost:4000/auth/signup`,
         values
       );
 
       if (signupResponse) {
+        setSuccess(true);
         dispatch(signup(signupResponse.data));
       }
 
@@ -43,13 +53,51 @@ export default function SignUp() {
 
       dispatch(login(loginResponse.data));
 
-      if (signupResponse.data.role === "freelancer") {
-        router.push("/freelancer");
+      if (loginResponse && signupResponse.data.user_role === "freelancer") {
+        setLoading(false);
+        setTimeout(() => {
+          router.push("/freelancer");
+          setSuccess(false);
+        }, 3000);
       } else {
-        router.push("/client");
+        setTimeout(() => {
+          router.push("/client");
+          setSuccess(false);
+        }, 3000);
+
+        setLoading(false);
       }
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  function handleSignUpValidation(values: any) {
+    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    Object.keys(values).map((value) => {
+      if (values[value].trim() === "") {
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          {
+            message: `please enter your ${value} `,
+          },
+        ]);
+      } else if (values[value] === "email" && !regex.test(values[value])) {
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          {
+            message: "please enter a valid email",
+          },
+        ]);
+      }
+    });
+    if (values.password !== values.confirmPassword) {
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        {
+          message: "passwords must match",
+        },
+      ]);
     }
   }
 
@@ -58,16 +106,55 @@ export default function SignUp() {
     handleSignup
   );
 
-  console.log(values);
   return (
-    <div className="h-full w-full overflow-y-hidden flex gap-x-2 items-center">
+    <div className="relative h-full w-full overflow-y-hidden flex gap-x-2 items-center">
+      {errors.length > 0 && toast && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          {errors.map((error) => (
+            <Toast
+              message={error?.message}
+              className="border-l-8 border-l-red-600 text-gray-800"
+              svg={errorSvg}
+            />
+          ))}
+        </div>
+      )}
+      {success && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          <Toast
+            message="successfully created account, loggin in"
+            className="border-l-8 border-l-green-600 text-green-800 font-bold"
+            svg={successSvg}
+          />
+        </div>
+      )}
+
+      {loading && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          <Toast
+            className="border-l-8 border-l-teal-600 text-teal-800 font-bold"
+            body={
+              <div className="flex items-center justify-start w-full gap-x-4 text-teal-800">
+                <div
+                  className="animate-spin border-b-2 border-teal-800  border-l-2 inline-block w-5 h-5 border rounded-full"
+                  role="status"
+                >
+                  <span className="hidden">Loading...</span>
+                </div>
+                <span>creating your account</span>
+              </div>
+            }
+          />
+        </div>
+      )}
+
       <div className="w-1/2 h-screen hidden md:flex  ">
         <img
           className="w-full h-full  rounded-tr-2xl "
           src="https://images.unsplash.com/photo-1660721858662-9ad9f37447f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
         />
       </div>
-      <div className=" w-full px-2 md:px-5  lg:w-1/2 h-screen py-4  lg:px-10 flex  flex-col gap-y-2">
+      <div className=" w-full px-2 md:px-5  lg:w-1/2 h-screen py-2 md:py-4  lg:px-10 flex  flex-col gap-y-2">
         <div className="w-full flex flex-col items-center justify-center">
           <h1 className="text-teal-800 text-3xl font-semibold">
             Join us at Hiresume
@@ -75,10 +162,22 @@ export default function SignUp() {
         </div>
         <div className="w-full h-full flex items-center justify-center">
           <form
-            onSubmit={handleSubmit}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSignUpValidation(values);
+              setToast(true);
+              setTimeout(() => {
+                setToast(false);
+                setErrors([]);
+              }, 3000);
+              console.log(errors.length);
+              if (errors.length <= 0) {
+                handleSubmit(e);
+              }
+            }}
             className="flex flex-col gap-y-2 w-full  h-full"
           >
-            <div className="flex flex-col md:flex-row gap-x-6 items-center justify-between px-2 md:px-20 text-gray-700 font-medium">
+            <div className="flex flex-col gap-y-2 md:flex-row md:gap-x-6 items-center justify-between px-2 md:px-20 text-gray-700 font-medium">
               <div className="flex flex-col w-full md:w-1/2 ">
                 <label>first name</label>
                 <input
@@ -86,7 +185,7 @@ export default function SignUp() {
                   name="firstName"
                   onChange={handleChange}
                   value={values.firstName}
-                  className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+                  className={`py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 `}
                 />
               </div>
               <div className="flex flex-col w-full md:w-1/2">
@@ -136,6 +235,7 @@ export default function SignUp() {
                 <select
                   id="country"
                   name="country"
+                  defaultValue="Kenya"
                   onChange={handleChange}
                   value={values.country}
                   autoComplete="country-name"
@@ -185,12 +285,28 @@ export default function SignUp() {
               </div>
             </div>
             <div className="px-2 md:px-20 py-2">
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
-              >
-                create account
-              </button>
+              {loading ? (
+                <button
+                  type="button"
+                  disabled={true}
+                  className="inline-flex items-center justify-center bg-opacity-70 gap-x-2 shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+                >
+                  <div
+                    className="animate-spin border-b-2   border-l-2 inline-block w-5 h-5 border rounded-full"
+                    role="status"
+                  >
+                    <span className="hidden">Loading...</span>
+                  </div>
+                  <span>loading...</span>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+                >
+                  create account
+                </button>
+              )}
             </div>
           </form>
         </div>
@@ -198,6 +314,59 @@ export default function SignUp() {
     </div>
   );
 }
+
+function Toast({ message, className, svg, body }: any) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className={`bg-white w-72 truncate  px-2 p-2  font-medium shadow border  h-14 flex items-center justify-center gap-x-2  rounded ${className}`}
+    >
+      {message && message.length > 0 && (
+        <div className="w-full flex items-center gap-x-3 justify-start overflow-x-hidden">
+          {svg}
+          <p className="truncate"> {message}</p>
+        </div>
+      )}
+      {body}
+    </motion.div>
+  );
+}
+
+const errorSvg = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6 text-red-800"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+    />
+  </svg>
+);
+
+const successSvg = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6 text-green-600"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+    />
+  </svg>
+);
 
 var country_list = [
   "Afghanistan",

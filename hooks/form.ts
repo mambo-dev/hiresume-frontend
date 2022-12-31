@@ -2,10 +2,10 @@ import { useState } from "react";
 
 export default function useForm(initialValues: any, axiosRequest: any) {
   const [values, setValues] = useState(initialValues);
+
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
-    console.log(e.target.value);
     setValues({
       ...values,
       [e.target.name]: e.target.value,
@@ -14,6 +14,7 @@ export default function useForm(initialValues: any, axiosRequest: any) {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
     axiosRequest(values);
   }
 
