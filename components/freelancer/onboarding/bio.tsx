@@ -1,20 +1,96 @@
 import React, { useState } from "react";
+import useForm from "../../../hooks/form";
+import Dropzone from "./utils/dropzone";
+import { error } from "../../../pages/auth/signup";
+
+type acceptedFiles = {
+  path?: string;
+  name?: string;
+  type?: string;
+  size?: number;
+};
+
+const Files = ({ acceptedFiles }: any) => {
+  return acceptedFiles.map((file: acceptedFiles) => (
+    <li className="text-teal-800 list-none" key={file.path}>
+      {file.name}
+    </li>
+  ));
+};
 
 export default function Bio() {
-  const bios = [1];
   const [loading, setLoading] = useState();
+  const [acceptedImage, setAcceptedImage] = useState<acceptedFiles[]>([]);
+  const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState<error[]>([]);
+  const initialValues = {
+    title: "",
+    description: "",
+    hourly_rate: "",
+  };
+
+  const handleBioValidation = (values: any) => {
+    Object.keys(values).map((value) => {
+      if (values[value].trim() === "") {
+        setErrors((prevErrors) => [
+          ...prevErrors,
+          {
+            message: `please enter your ${value} `,
+          },
+        ]);
+      }
+    });
+  };
+
+  const handleBioAxios = async () => {
+    try {
+    } catch (error) {
+      console.log(error);
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        {
+          message: "could not login into your account",
+        },
+      ]);
+    }
+  };
+
+  const { values, handleChange, handleSubmit } = useForm(
+    initialValues,
+    handleBioAxios
+  );
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center py-10 px-2 bg-inherit">
       <div className="font-medium text-teal-800">
         <p>Describe who you are and what you do and can do for a client </p>
       </div>
-      <form className="h-full w-full flex flex-col gap-y-4 sm:w-4/5 md:w-3/4 lg:w-1/2 ">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleBioValidation(values);
+
+          setTimeout(() => {
+            setErrors([]);
+          }, 3000);
+
+          if (errors.length <= 0) {
+            handleSubmit(e);
+          }
+        }}
+        className="h-full w-full flex flex-col gap-y-4 sm:w-4/5 md:w-3/4 lg:w-1/2 "
+      >
+        <div className="flex flex-col w-full items-center justify-center py-4 ">
+          <Dropzone setAcceptedImage={setAcceptedImage} />
+          <Files acceptedFiles={acceptedImage} />
+        </div>
         <div className="flex flex-col w-full">
           <label>title</label>
           <input
             type="text"
             name="title"
+            value={values.title}
+            onChange={handleChange}
             placeholder="React MongoDb Developer"
             className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
@@ -23,6 +99,8 @@ export default function Bio() {
           <label>description</label>
           <textarea
             name="description"
+            value={values.description}
+            onChange={handleChange}
             className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
         </div>
@@ -31,6 +109,8 @@ export default function Bio() {
           <input
             type="number"
             name="hourly_rate"
+            value={values.hourly_rate}
+            onChange={handleChange}
             className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
         </div>

@@ -59,13 +59,15 @@ export default function OnBoarding() {
   //   }, []);
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden">
+    <div className="h-screen max-h-screen overflow-auto">
       <header className="px-2 py-1 w-full h-14 bg-white border-b shadow border-gray-300  flex items-center justify-center text-teal-900 font-semibold">
         <p className="truncate">
           wooo welcome Lets get your work profile ready{" "}
         </p>
       </header>
-      <main className=" h-full  w-full">{steps[currentStep]?.stepHtml}</main>
+      <main className=" overflow-y-auto h-full  w-full">
+        {steps[currentStep]?.stepHtml}
+      </main>
       <footer className="w-full h-14 shadow-inner border-t border-gray-300 px-4 py-4 bg-white fixed bottom-0 flex gap-x-4 items-center justify-end">
         {currentStep !== 0 && (
           <button
