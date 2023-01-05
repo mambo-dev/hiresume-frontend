@@ -1,140 +1,93 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import FreelancerLayout from "../../component/layouts/freelancer-layout";
 
-export default function Profile() {
-  const [isFixed, setIsFixed] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    function handleScroll() {
-      if (window.scrollY > 50) {
-        setIsFixed(true);
-      } else {
-        setIsFixed(false);
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+export default function Profile<NextPageWithLayout>() {
   return (
-    <div className="h-screen max-h-screen overflow-auto  overflow-hidden ">
-      <header
-        className={`${
-          isFixed ? "fixed" : ""
-        } transition-all ease-in-out w-full py-2 px-2 bg-white h-14 shadow flex justify-between items-center`}
-      >
-        <div className="h-full w-36 ">
-          <img
-            src="/images/logo-bgless.png"
-            className="w-full h-3/4 object-cover"
-            alt="logo"
-          />
+    <div className="flex flex-col md:flex-row ">
+      <div className="h-screen w-full flex flex-col py-8 gap-y-4 items-center bg-gradient-to-r from-slate-200 via-slate-50 md:w-2/5 ">
+        <img
+          className="w-40 h-40 rounded-full border"
+          src="https://images.unsplash.com/photo-1672888560227-aaf9b90d480a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
+        />
+        <div className="flex flex-col gap-y-4 items-start text-gray-700 font-medium">
+          <div className="flex items-center justify-center gap-x-2 py-3 px-1 ">
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                />
+              </svg>
+            </span>{" "}
+            <p>mambo.michael.22@gmail.com</p>
+          </div>
+          <div className="flex items-center justify-center gap-x-2 py-3 px-1 ">
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                />
+              </svg>
+            </span>{" "}
+            <p>Kenya</p>
+          </div>
+          <div className="flex items-center justify-center gap-x-2  py-3 px-1 ">
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"
+                />
+              </svg>
+            </span>{" "}
+            <p>Full time</p>
+          </div>
+          <div className="flex items-center justify-center w-full  py-4  ">
+            <button className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full ">
+              update availability
+            </button>
+          </div>
         </div>
-        <nav className="h-full flex justify-between gap-x-4 px-1"></nav>
-        <button
-          className="md:hidden inline-flex justify-center items-center"
-          onClick={() => setOpen(!open)}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          </svg>
-        </button>
-        {open && (
-          <motion.nav
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col py-2 px-2 gap-y-4 top-14 bg-white shadow border-l w-3/4 right-0 bottom-0  absolute max-h-screen   md:hidden"
-          >
-            <div className="w-full h-[fit-content] flex justify-around ">
-              <img
-                src="https://images.unsplash.com/photo-1672888560227-aaf9b90d480a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
-                className="w-12 h-12 rounded-full"
-                alt="profile"
-              />
-              <button className="w-12 h-12  rounded-full inline-flex items-center justify-center bg-teal-100">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 text-teal-900"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                  />
-                </svg>
-              </button>
-              <button className="w-12 h-12  rounded-full inline-flex items-center justify-center bg-blue-100 ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 text-blue-800"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="w-full p-6 text-gray-800 flex items-center gap-y-6 justify-center flex-col ">
-              {[
-                {
-                  name: "Find projects",
-                  link: "find-projects",
-                },
-                {
-                  name: "Reports",
-                  link: "reports",
-                },
-                {
-                  name: "My contracts",
-                  link: "contracts",
-                },
-              ].map((link: any, index: number) => (
-                <Link key={index} href={link.link}>
-                  <motion.p
-                    initial={{ opacity: 0, x: 100 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 1 }}
-                    className="hover:underline cursor-pointer "
-                  >
-                    {link.name}
-                  </motion.p>
-                </Link>
-              ))}
-            </div>
-            <div className="w-full flex justify-around">
-              <button className="inline-flex items-center justify-center shadow shadow-orange-500 bg-orange-600 rounded  text-gray-100  focus:shadow-md focus:shadow-orange-400 p-2 w-full ">
-                Log out{" "}
-              </button>
-            </div>
-          </motion.nav>
-        )}
-      </header>
+      </div>
+      <div className="h-screen py-8 bg-transparent w-full flex flex-col gap-y-4 items-start  md:w-3/5 ">
+        something different
+      </div>
     </div>
   );
 }
+
+Profile.getLayout = function getLayout(page: ReactElement) {
+  return <FreelancerLayout>{page}</FreelancerLayout>;
+};
