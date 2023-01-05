@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
-import Bio from "../../components/freelancer/onboarding/bio";
+import Bio from "../../component/freelancer/onboarding/bio";
+import Education from "../../component/freelancer/onboarding/education";
+import Experience from "../../component/freelancer/onboarding/experience";
 
 const steps = [
   {
@@ -13,12 +15,12 @@ const steps = [
   {
     id: 2,
     step: "education",
-    stepHtml: <div className="w-full h-full bg-red-500">.</div>,
+    stepHtml: <Education />,
   },
   {
     id: 3,
     step: "experience",
-    stepHtml: <div className="w-full h-full bg-yellow-500">.</div>,
+    stepHtml: <Experience />,
   },
 ];
 
@@ -77,15 +79,22 @@ export default function OnBoarding() {
             previous
           </button>
         )}
-        <button className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-28 ">
-          submit
-        </button>
-        <button
-          onClick={handleNextStep}
-          className=" inline-flex items-center justify-center shadow bg-transparent border rounded border-gray-300 focus:shadow-md focus:shadow-gray-300 p-2 w-28 "
-        >
-          {finalStep ? "complete" : "next"}
-        </button>
+
+        {currentStep === steps.length - 1 ? (
+          <button
+            onClick={() => router.push("/freelancer/profile")}
+            className=" inline-flex items-center justify-center shadow bg-transparent border rounded border-gray-300 focus:shadow-md focus:shadow-gray-300 p-2 w-28 "
+          >
+            complete
+          </button>
+        ) : (
+          <button
+            onClick={handleNextStep}
+            className=" inline-flex items-center justify-center shadow bg-transparent border rounded border-gray-300 focus:shadow-md focus:shadow-gray-300 p-2 w-28 "
+          >
+            next
+          </button>
+        )}
       </footer>
     </div>
   );

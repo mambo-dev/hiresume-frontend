@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import useForm from "../../../hooks/form";
-import Dropzone from "./utils/dropzone";
-import { error } from "../../../pages/auth/signup";
+import Dropzone from "../../utils/dropzone";
+import { error, errorSvg, successSvg } from "../../../pages/auth/signup";
+import axios from "axios";
+import Toast from "../../utils/toast";
 
 type acceptedFiles = {
   path?: string;
@@ -19,9 +21,10 @@ const Files = ({ acceptedFiles }: any) => {
 };
 
 export default function Bio() {
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const [acceptedImage, setAcceptedImage] = useState<acceptedFiles[]>([]);
   const [success, setSuccess] = useState(false);
+  const [toast, setToast] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const initialValues = {
     title: "",
@@ -42,14 +45,42 @@ export default function Bio() {
     });
   };
 
-  const handleBioAxios = async () => {
+  const handleBioAxios = async (values: any) => {
     try {
+      setLoading(true);
+      const formData = new FormData();
+      //@ts-ignore
+      formData.append("image", acceptedImage[0]);
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("hourly_rate", values.hourly_rate);
+
+      const submitBio = await axios.post(
+        `http://localhost:4000/freelancers/bio`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvcGl4ODE4NjFAY2hubG9nLmNvbSIsInN1YiI6IjU1ODljNGRiLTY3NGQtNDUyNS05OTc4LWNhYjFmNTgzMTNmZiIsImlhdCI6MTY3MjkwMjk4MCwiZXhwIjoxNjcyOTA2NTgwfQ.L4zAjwzQ5xb8E9gtIuKy67a-L-xKochFz93CS-RpXoo",
+          },
+        }
+      );
+
+      if (submitBio) {
+        setSuccess(true);
+        setLoading(false);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 3000);
+      }
     } catch (error) {
       console.log(error);
+      setLoading(false);
       setErrors((prevErrors) => [
         ...prevErrors,
         {
-          message: "could not login into your account",
+          message: "could not create bio",
         },
       ]);
     }
@@ -61,7 +92,46 @@ export default function Bio() {
   );
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center py-10 px-2 bg-inherit">
+    <div className="w-full  h-full flex flex-col items-center justify-center py-10 px-2 bg-inherit">
+      {errors.length > 0 && toast && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          {errors.map((error) => (
+            <Toast
+              message={error?.message}
+              className="border-l-8 border-l-red-600 text-gray-800"
+              svg={errorSvg}
+            />
+          ))}
+        </div>
+      )}
+      {success && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          <Toast
+            message="successfully created bio"
+            className="border-l-8 border-l-green-600 text-green-800 font-bold"
+            svg={successSvg}
+          />
+        </div>
+      )}
+
+      {loading && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          <Toast
+            className="border-l-8 border-l-teal-600 text-teal-800 font-bold"
+            body={
+              <div className="flex items-center justify-start w-full gap-x-4 text-teal-800">
+                <div
+                  className="animate-spin border-b-2 border-teal-800  border-l-2 inline-block w-5 h-5 border rounded-full"
+                  role="status"
+                >
+                  <span className="hidden">Loading...</span>
+                </div>
+                <span>creating your bio</span>
+              </div>
+            }
+          />
+        </div>
+      )}
       <div className="font-medium text-teal-800">
         <p>Describe who you are and what you do and can do for a client </p>
       </div>
@@ -69,8 +139,9 @@ export default function Bio() {
         onSubmit={(e) => {
           e.preventDefault();
           handleBioValidation(values);
-
+          setToast(true);
           setTimeout(() => {
+            setToast(false);
             setErrors([]);
           }, 3000);
 
@@ -135,7 +206,7 @@ export default function Bio() {
               type="submit"
               className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
             >
-              create account
+              create bio
             </button>
           )}
         </div>
