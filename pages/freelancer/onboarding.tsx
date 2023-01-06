@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import Bio from "../../component/freelancer/onboarding/bio";
 import Education from "../../component/freelancer/onboarding/education";
 import Experience from "../../component/freelancer/onboarding/experience";
+import { useAuth } from "../../hooks/auth";
+import RequireAuth from "../../component/utils/require-auth";
 
 const steps = [
   {
@@ -25,10 +27,20 @@ const steps = [
 ];
 
 export default function OnBoarding() {
-  const authState = useSelector((state: any) => state.user);
   const [currentStep, setCurrentStep] = useState(0);
   const [finalStep, setFinalStep] = useState(false);
   const router = useRouter();
+  const { authenticated, reroute, loading } = useAuth();
+
+  if (!authenticated) {
+    setTimeout(() => {
+      if (!loading) {
+        router.replace("/auth/login");
+      }
+    }, 3000);
+
+    return <RequireAuth reroute={reroute} loading={loading} />;
+  }
 
   function handleNextStep() {
     if (currentStep !== steps.length - 1) {
@@ -45,20 +57,6 @@ export default function OnBoarding() {
       setFinalStep(false);
     }
   }
-
-  console.log(currentStep, finalStep);
-
-  //   function handleRedirect() {
-  //     router.push("/auth/login");
-  //   }
-
-  //   useEffect(() => {
-  //     if (!authState.isLoggedIn) {
-  //       setTimeout(() => {
-  //         handleRedirect();
-  //       }, 1000);
-  //     }
-  //   }, []);
 
   return (
     <div className="h-screen max-h-screen overflow-auto">

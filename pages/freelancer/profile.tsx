@@ -2,8 +2,25 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import FreelancerLayout from "../../component/layouts/freelancer-layout";
+import { useAuth } from "../../hooks/auth";
+import { useRouter } from "next/router";
+import Toast from "../../component/utils/toast";
+import Image from "next/image";
+import RequireAuth from "../../component/utils/require-auth";
 
 export default function Profile<NextPageWithLayout>() {
+  const { authenticated, reroute, loading } = useAuth();
+
+  const router = useRouter();
+  if (!authenticated) {
+    setTimeout(() => {
+      if (!loading) {
+        router.replace("/auth/login");
+      }
+    }, 3000);
+
+    return <RequireAuth reroute={reroute} loading={loading} />;
+  }
   return (
     <div className="flex flex-col md:flex-row ">
       <div className="h-screen w-full flex flex-col py-8 gap-y-4 items-center bg-gradient-to-r from-slate-200 via-slate-50 md:w-2/5 ">
@@ -81,8 +98,75 @@ export default function Profile<NextPageWithLayout>() {
           </div>
         </div>
       </div>
-      <div className="h-screen py-8 bg-transparent w-full flex flex-col gap-y-4 items-start  md:w-3/5 ">
-        something different
+      <div className="h-screen px-4 md:pr-32  py-8 bg-transparent w-full flex flex-col gap-y-4 items-start  md:w-3/5 ">
+        <div className="flex flex-col gap-y-4 items-start justify-start ">
+          <span className="text-2xl text-teal-900 font-bold">
+            Professional Summary
+          </span>
+          <h1 className="text-xl text-teal-800 font-bold">
+            Full Stack React developer
+          </h1>
+          <p className="text-gray-800 font-medium ">
+            I am a highly motivated and experienced developer with a passion for
+            building and maintaining high-quality software applications.
+            Throughout my career, I have gained a strong understanding of
+            various technologies, including programming languages such as Java
+            and Python, as well as databases and frameworks like MySQL and
+            React.
+          </p>
+        </div>
+        <div className="flex flex-col gap-y-2 items-start justify-start w-full">
+          <span className="text-2xl text-teal-900 font-bold">
+            Work Experience
+          </span>
+          {[1].map((number) => (
+            <>
+              <div className="h-28  w-full border-b border-gray-200 flex items-center justify-between ">
+                <div className="w-3/4 flex flex-col items-start justify-start  ">
+                  <p className="text-teal-700 text-lg">Senior engineer React</p>
+                  <p className="text-gray-700">2015 - 2022</p>
+                  <p className="text-gray-500">Kenya</p>
+                </div>
+                <div className="w-1/4 flex items-center justify-end">
+                  <span className="p-1 rounded-2xl px-2 bg-teal-100 text-teal-700 font-bold">
+                    remote
+                  </span>
+                </div>
+              </div>
+            </>
+          ))}
+        </div>
+        <div className="flex flex-col gap-y-2 items-start justify-start w-full">
+          <span className="text-2xl text-teal-900 font-bold">Education</span>
+          {[1].map((number) => (
+            <div className="h-24  w-full border-b border-gray-200 flex items-center justify-between ">
+              <div className="w-3/4 flex flex-col items-start justify-start  ">
+                <p className="text-teal-700 text-lg">St Pauls University</p>
+
+                <p className="text-gray-500">Kenya</p>
+              </div>
+              <div className="w-1/4 flex flex-col items-start justify-start ">
+                <span className="invisible ">holder</span>
+                <span className="w-full text-gray-700 text-sm ">
+                  2015 - 2022
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col gap-y-2 items-start justify-start w-full">
+          <span className="text-2xl text-teal-900 font-bold">Files</span>
+          {[1].map((number) => (
+            <div className="h-24  text-blue-800 hover:underline w-full border-b border-gray-200">
+              <Link href="https://hiresumefiles.s3.ap-northeast-1.amazonaws.com/7b3b5d60-ccb6-47f5-9be7-bb2b35722682-design-3.png?AWSAccessKeyId=AKIAUZRZESOPSM4RES74&Expires=1673004502&Signature=609w038WMnMAgICYUwKeYOMROGk%3D">
+                <div className="flex items-center  gap-x-2">
+                  <img src="/images/icons8-png-24.png" alt="file-icon" />
+                  <p>design-3.png</p>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
