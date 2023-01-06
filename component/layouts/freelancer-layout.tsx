@@ -3,11 +3,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Menu from "../utils/menu";
 import { useAuth } from "../../hooks/auth";
-import { useOutsideAlerter } from "../../hooks/click";
 
 export default function FreelancerLayout({ children }: any) {
   const [isFixed, setIsFixed] = useState(false);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { logout } = useAuth();
 

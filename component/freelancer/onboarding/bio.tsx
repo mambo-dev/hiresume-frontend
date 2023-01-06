@@ -20,7 +20,7 @@ const Files = ({ acceptedFiles }: any) => {
   ));
 };
 
-export default function Bio() {
+export default function Bio({ token }: any) {
   const [loading, setLoading] = useState(false);
   const [acceptedImage, setAcceptedImage] = useState<acceptedFiles[]>([]);
   const [success, setSuccess] = useState(false);
@@ -61,8 +61,7 @@ export default function Bio() {
         {
           withCredentials: true,
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvcGl4ODE4NjFAY2hubG9nLmNvbSIsInN1YiI6IjU1ODljNGRiLTY3NGQtNDUyNS05OTc4LWNhYjFmNTgzMTNmZiIsImlhdCI6MTY3MjkwMjk4MCwiZXhwIjoxNjcyOTA2NTgwfQ.L4zAjwzQ5xb8E9gtIuKy67a-L-xKochFz93CS-RpXoo",
+            Authorization: `Bearer ${token}`,
           },
         }
       );

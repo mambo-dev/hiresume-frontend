@@ -3,9 +3,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import Toast from "../../component/utils/toast";
 import useForm from "../../hooks/form";
 import { login } from "../../state-mgt/auth.actions";
-import { error, errorSvg, successSvg, Toast } from "./signup";
+import { error, errorSvg, successSvg } from "./signup";
 
 export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);

@@ -14,6 +14,7 @@ export const useAuth = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [reroute, setReroute] = useState(false);
+  const [token, setAccessToken] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export const useAuth = () => {
         setAuthenticated(false);
         setReroute(true);
       } else {
+        setAccessToken(token);
         setAuthenticated(true);
       }
     } else {
@@ -40,7 +42,8 @@ export const useAuth = () => {
     Cookies.remove("access_token");
     setAuthenticated(false);
     router.replace("/");
+    setAccessToken("");
   };
 
-  return { authenticated, loading, logout, reroute };
+  return { authenticated, loading, logout, reroute, token };
 };

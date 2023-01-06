@@ -9,7 +9,7 @@ type EducationValues = {
   year_From: string;
   year_to: string;
 };
-export default function Education() {
+export default function Education({ token }: any) {
   const [loading, setLoading] = useState(false);
 
   const [success, setSuccess] = useState(false);
@@ -45,8 +45,7 @@ export default function Education() {
         {
           withCredentials: true,
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvcGl4ODE4NjFAY2hubG9nLmNvbSIsInN1YiI6IjU1ODljNGRiLTY3NGQtNDUyNS05OTc4LWNhYjFmNTgzMTNmZiIsImlhdCI6MTY3MjkwMjk4MCwiZXhwIjoxNjcyOTA2NTgwfQ.L4zAjwzQ5xb8E9gtIuKy67a-L-xKochFz93CS-RpXoo",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -150,7 +149,7 @@ export default function Education() {
         <div className="flex flex-col w-full">
           <label>year started</label>
           <input
-            type="text"
+            type="date"
             name="year_from"
             value={values.year_from}
             placeholder="from"
@@ -161,12 +160,12 @@ export default function Education() {
         <div className="flex flex-col w-full">
           <label>year ended</label>
           <input
-            type="text"
+            type="date"
             name="year_to"
             placeholder="to"
             value={values.year_to}
             onChange={handleChange}
-            className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+            className="py-2 px-1   rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
         </div>
 

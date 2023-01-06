@@ -8,29 +8,29 @@ import Experience from "../../component/freelancer/onboarding/experience";
 import { useAuth } from "../../hooks/auth";
 import RequireAuth from "../../component/utils/require-auth";
 
-const steps = [
-  {
-    id: 1,
-    step: "bio",
-    stepHtml: <Bio />,
-  },
-  {
-    id: 2,
-    step: "education",
-    stepHtml: <Education />,
-  },
-  {
-    id: 3,
-    step: "experience",
-    stepHtml: <Experience />,
-  },
-];
-
 export default function OnBoarding() {
   const [currentStep, setCurrentStep] = useState(0);
   const [finalStep, setFinalStep] = useState(false);
   const router = useRouter();
-  const { authenticated, reroute, loading } = useAuth();
+  const { authenticated, reroute, loading, token } = useAuth();
+
+  const steps = [
+    {
+      id: 1,
+      step: "bio",
+      stepHtml: <Bio token={token} />,
+    },
+    {
+      id: 2,
+      step: "education",
+      stepHtml: <Education token={token} />,
+    },
+    {
+      id: 3,
+      step: "experience",
+      stepHtml: <Experience token={token} />,
+    },
+  ];
 
   if (!authenticated) {
     setTimeout(() => {

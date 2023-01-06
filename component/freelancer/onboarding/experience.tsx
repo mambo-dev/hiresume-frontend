@@ -9,7 +9,7 @@ type ExperienceValues = {
   year_From: string;
   year_to: string;
 };
-export default function Experience() {
+export default function Experience({ token }: any) {
   const [loading, setLoading] = useState(false);
 
   const [success, setSuccess] = useState(false);
@@ -19,6 +19,8 @@ export default function Experience() {
     company: "",
     year_from: "",
     year_to: "",
+    position: "",
+    tag: "remote",
   };
 
   const handleEducationValidation = (values: any) => {
@@ -45,8 +47,7 @@ export default function Experience() {
         {
           withCredentials: true,
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvcGl4ODE4NjFAY2hubG9nLmNvbSIsInN1YiI6IjU1ODljNGRiLTY3NGQtNDUyNS05OTc4LWNhYjFmNTgzMTNmZiIsImlhdCI6MTY3MjkwMjk4MCwiZXhwIjoxNjcyOTA2NTgwfQ.L4zAjwzQ5xb8E9gtIuKy67a-L-xKochFz93CS-RpXoo",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -80,6 +81,8 @@ export default function Experience() {
     initialValues,
     handleEducationAxios
   );
+
+  console.log(values);
   return (
     <div className="w-full  h-full flex flex-col items-center gap-y-4 justify-center py-16 px-2 bg-inherit">
       {errors.length > 0 && toast && (
@@ -156,7 +159,7 @@ export default function Experience() {
         <div className="flex flex-col w-full">
           <label>year started</label>
           <input
-            type="text"
+            type="date"
             name="year_from"
             value={values.year_from}
             placeholder="from"
@@ -167,13 +170,39 @@ export default function Experience() {
         <div className="flex flex-col w-full">
           <label>year ended</label>
           <input
-            type="text"
+            type="date"
             name="year_to"
             placeholder="to"
             value={values.year_to}
             onChange={handleChange}
             className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
+        </div>
+        <div className="flex flex-col w-full">
+          <label>position</label>
+          <input
+            type="text"
+            name="position"
+            value={values.position}
+            onChange={handleChange}
+            className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+          />
+        </div>
+        <div className="flex flex-col w-full">
+          <label>country</label>
+          <select
+            id="tag"
+            name="tag"
+            onChange={handleChange}
+            defaultValue="remote"
+            value={values.tag}
+            autoComplete="tag"
+            className=" py-2 px-1 rounded bg-white  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+          >
+            <option value="remote"> remote </option>
+            <option value="full_time"> full time </option>
+            <option value="part_time"> part time </option>
+          </select>
         </div>
 
         <div className=" w-full">

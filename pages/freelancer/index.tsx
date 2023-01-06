@@ -5,7 +5,7 @@ import RequireAuth from "../../component/utils/require-auth";
 import { useAuth } from "../../hooks/auth";
 
 export default function Freelancer<NextPageWithLayout>() {
-  let { authenticated, reroute, loading } = useAuth();
+  let { authenticated, reroute, loading, token } = useAuth();
 
   const router = useRouter();
 

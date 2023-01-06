@@ -7,11 +7,93 @@ import { useRouter } from "next/router";
 import Toast from "../../component/utils/toast";
 import Image from "next/image";
 import RequireAuth from "../../component/utils/require-auth";
+import axios from "axios";
+import { error, errorSvg, successSvg } from "../auth/signup";
 
 export default function Profile<NextPageWithLayout>() {
-  const { authenticated, reroute, loading } = useAuth();
-
+  const { authenticated, reroute, loading, token } = useAuth();
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [updateAvailability, setUpdateAvailability] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [profile, setProfile] = useState({});
+  const [errors, setErrors] = useState<error[]>([]);
   const router = useRouter();
+
+  const handleFetchProfile = async () => {
+    try {
+      setProfileLoading(true);
+      const getProfile = await axios.get(
+        `http://localhost:4000/freelancers/full-profile`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (getProfile) {
+        setTimeout(() => {
+          setProfileLoading(false);
+        }, 2000);
+
+        setTimeout(() => {
+          setSuccess(true);
+        }, 4000);
+
+        setTimeout(() => {
+          setSuccess(false);
+        }, 6000);
+
+        return getProfile.data;
+      }
+    } catch (error) {
+      console.log(error);
+      setProfileLoading(false);
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        {
+          message: "could not retrieve profile ",
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    handleFetchProfile();
+  }, []);
+
+  const handleUpdateAvailability = async () => {
+    try {
+      setAvailabilityLoading(true);
+      const updateAvailability = await axios.get(
+        `http://localhost:4000/freelancers/update-availability`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (updateAvailability) {
+        setUpdateAvailability(true);
+        setAvailabilityLoading(false);
+        setTimeout(() => {
+          setUpdateAvailability(false);
+        }, 3000);
+      }
+    } catch (error) {
+      setAvailabilityLoading(false);
+      setErrors((prevErrors) => [
+        ...prevErrors,
+        {
+          message: "could not update availability ",
+        },
+      ]);
+    }
+  };
+
   if (!authenticated) {
     setTimeout(() => {
       if (!loading) {
@@ -21,8 +103,84 @@ export default function Profile<NextPageWithLayout>() {
 
     return <RequireAuth reroute={reroute} loading={loading} />;
   }
+
+  setTimeout(() => {
+    setErrors([]);
+    setSuccess(false);
+    setProfileLoading(false);
+  }, 5000);
+
+  console.log(profile);
   return (
     <div className="flex flex-col md:flex-row ">
+      {errors.length > 0 && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          {errors.map((error) => (
+            <Toast
+              message={error?.message}
+              className="border-l-8 border-l-red-600 text-gray-800"
+              svg={errorSvg}
+            />
+          ))}
+        </div>
+      )}
+
+      {success && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          <Toast
+            message="profile found "
+            className="border-l-8 border-l-green-600 text-green-800 font-bold"
+            svg={successSvg}
+          />
+        </div>
+      )}
+      {updateAvailability && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          <Toast
+            message="availability updated"
+            className="border-l-8 border-l-green-600 text-green-800 font-bold"
+            svg={successSvg}
+          />
+        </div>
+      )}
+
+      {profileLoading && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          <Toast
+            className="border-l-8 border-l-teal-600 text-teal-800 font-bold"
+            body={
+              <div className="flex items-center justify-start w-full gap-x-4 text-teal-800">
+                <div
+                  className="animate-spin border-b-2 border-teal-800  border-l-2 inline-block w-5 h-5 border rounded-full"
+                  role="status"
+                >
+                  <span className="hidden">Loading...</span>
+                </div>
+                <span>getting profile</span>
+              </div>
+            }
+          />
+        </div>
+      )}
+
+      {availabilityLoading && (
+        <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
+          <Toast
+            className="border-l-8 border-l-teal-600 text-teal-800 font-bold"
+            body={
+              <div className="flex items-center justify-start w-full gap-x-4 text-teal-800">
+                <div
+                  className="animate-spin border-b-2 border-teal-800  border-l-2 inline-block w-5 h-5 border rounded-full"
+                  role="status"
+                >
+                  <span className="hidden">Loading...</span>
+                </div>
+                <span>updating</span>
+              </div>
+            }
+          />
+        </div>
+      )}
       <div className="h-screen w-full flex flex-col py-8 gap-y-4 items-center bg-gradient-to-r from-slate-200 via-slate-50 md:w-2/5 ">
         <img
           className="w-40 h-40 rounded-full border"
@@ -92,9 +250,28 @@ export default function Profile<NextPageWithLayout>() {
             <p>Full time</p>
           </div>
           <div className="flex items-center justify-center w-full  py-4  ">
-            <button className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full ">
-              update availability
-            </button>
+            {availabilityLoading ? (
+              <button
+                type="button"
+                disabled={true}
+                className="inline-flex items-center justify-center bg-opacity-70 gap-x-2 shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+              >
+                <div
+                  className="animate-spin border-b-2   border-l-2 inline-block w-5 h-5 border rounded-full"
+                  role="status"
+                >
+                  <span className="hidden">Loading...</span>
+                </div>
+                <span>loading...</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleUpdateAvailability}
+                className="inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+              >
+                update availability
+              </button>
+            )}
           </div>
         </div>
       </div>
