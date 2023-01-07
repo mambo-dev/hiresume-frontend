@@ -107,9 +107,7 @@ export default function FreelancerLayout({ children }: any) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
-                className={` ${
-                  open ? "flex" : "hidden"
-                }  flex-col top-16 rounded absolute right-0 bg-white py-2 px-2 w-48 shadow  items-center gap-y-2  text-teal-800 font-semibold`}
+                className={` flex  flex-col top-16 rounded absolute right-0 bg-white py-2 px-2 w-48 shadow  items-center gap-y-2  text-teal-800 font-semibold`}
               >
                 <Link href="/freelancer/profile">
                   <li className="flex items-center justify-start px-10 gap-x-4 w-full py-1 rounded   hover:bg-teal-600 hover:text-white">
@@ -203,7 +201,7 @@ export default function FreelancerLayout({ children }: any) {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col py-2 px-2 gap-y-4 top-14 bg-white shadow border-l w-full  h-screen sm:w-1/2 right-0 bottom-0  absolute    md:hidden"
+            className="flex flex-col z-10 py-2 px-2 gap-y-4 top-14 bg-white shadow border-l w-full  h-screen sm:w-1/2 right-0 bottom-0  absolute    md:hidden"
           >
             <div className="w-full h-[fit-content] flex justify-around ">
               <Link href="/freelancer/profile">

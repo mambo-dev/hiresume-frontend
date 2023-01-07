@@ -1,21 +1,21 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux/es/exports";
+import React, { useContext, useState } from "react";
 import Toast from "../../component/utils/toast";
 import useForm from "../../hooks/form";
 import { login, signup } from "../../state-mgt/auth.actions";
+import { Context } from "../../context/context";
 
 export type error = {
   message?: String;
 };
 export default function SignUp() {
-  const dispatch = useDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const [toast, setToast] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { state, dispatch } = useContext(Context);
 
   const initialValues = {
     email: "",
@@ -34,10 +34,9 @@ export default function SignUp() {
         `http://localhost:4000/auth/signup`,
         values
       );
-      console.log(signupResponse);
+
       if (signupResponse) {
         setSuccess(true);
-        dispatch(signup(signupResponse.data));
       }
 
       const loginResponse = await axios.post(
@@ -51,7 +50,10 @@ export default function SignUp() {
         }
       );
 
-      dispatch(login(loginResponse.data));
+      dispatch({
+        type: "LOGGED_IN_USER",
+        payload: loginResponse.data,
+      });
 
       if (loginResponse && signupResponse.data.user_role === "freelancer") {
         setLoading(false);

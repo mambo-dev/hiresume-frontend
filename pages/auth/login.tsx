@@ -1,9 +1,10 @@
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect, useContext } from "react";
+
 import Toast from "../../component/utils/toast";
+import { Context } from "../../context/context";
 import useForm from "../../hooks/form";
 import { login } from "../../state-mgt/auth.actions";
 import { error, errorSvg, successSvg } from "./signup";
@@ -12,7 +13,8 @@ export default function LogIn() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const [success, setSuccess] = useState(false);
-  const dispatch = useDispatch();
+  const { dispatch } = useContext(Context);
+
   const router = useRouter();
   const intialValues = {
     username: "",
@@ -33,7 +35,10 @@ export default function LogIn() {
         }
       );
 
-      dispatch(login(loginResponse.data));
+      dispatch({
+        type: "LOGGED_IN_USER",
+        payload: loginResponse.data,
+      });
 
       if (loginResponse) {
         setTimeout(() => {

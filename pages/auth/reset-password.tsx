@@ -2,7 +2,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+
 import Toast from "../../component/utils/toast";
 import useForm from "../../hooks/form";
 import { login } from "../../state-mgt/auth.actions";
@@ -12,7 +12,7 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const [success, setSuccess] = useState(false);
-  const dispatch = useDispatch();
+
   const router = useRouter();
   const intialValues = {
     email: "",
