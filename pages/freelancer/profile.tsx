@@ -11,19 +11,16 @@ import axios from "axios";
 import { error, errorSvg, successSvg } from "../auth/signup";
 import { freelancer_education, ProfileInterface } from "./types";
 import { GetServerSideProps } from "next";
-import { Context } from "../../context/context";
+import { User, UserContext } from "../../context/context";
 
 export default function Profile<NextPageWithLayout>({ data }: any) {
-  const { authenticated, reroute, loading, token } = useAuth();
+  const { authenticated, reroute, loading, token, user } = useAuth();
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
   const [updateAvailability, setUpdateAvailability] = useState(false);
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [available, setAvailable] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const router = useRouter();
-  const { state, dispatch } = useContext(Context);
-
-  console.log(state.user);
 
   const { success, profile } = data;
 
@@ -251,22 +248,24 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
               <h1 className="text-xl text-teal-800 font-bold">
                 {profile?.freelancer_Bio.bio_title}
               </h1>
-              <button>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5 text-blue-500"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                  />
-                </svg>
-              </button>
+              {user?.user_role === "freelancer" && (
+                <button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5 text-blue-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                    />
+                  </svg>
+                </button>
+              )}
             </span>
             <p className="text-gray-800 font-medium ">
               {profile?.freelancer_Bio.bio_description}
@@ -459,6 +458,18 @@ Profile.getLayout = function getLayout(page: ReactElement) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const { req } = context;
+    //@ts-ignore
+
+    const user: User = JSON.parse(req.cookies.user);
+    if (user.user_role !== "freelancer") {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/auth/login",
+        },
+      };
+    }
+
     const getProfile = await axios.get(
       `http://localhost:4000/freelancers/full-profile`,
       {

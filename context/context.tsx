@@ -1,25 +1,34 @@
-import { createContext, useReducer } from "react";
-import { user } from "./reducers";
+import { ContextType, createContext, useState } from "react";
 
-const initialState = {
-  user: {},
+export type User = {
+  id: number;
+  user_id: string;
+  user_email: string;
+  user_role: string;
+  user_country: string;
+  user_profile_id: number;
+  user_role_id: number;
 };
 
-const Context = createContext<any>({});
+export const UserContext = createContext<any>({});
 
-const combineReducers =
-  (...reducers: any[]) =>
-  (state: any, action: any) => {
-    for (let i = 0; i < reducers.length; i++)
-      state = reducers[i](state, action);
-    return state;
+type ProviderType = {
+  children: React.ReactNode;
+};
+
+export function UserProvider({ children }: ProviderType) {
+  const [user, setUser] = useState<User | null>(null);
+
+  const getUserLoggedIn = (user: User) => {
+    setUser((prevUser) => {
+      prevUser = user;
+
+      return prevUser;
+    });
   };
-
-const Provider = ({ children }: any) => {
-  const [state, dispatch] = useReducer(combineReducers(user), initialState); // pass more reducers combineReducers(user, blogs, products)
-  const value = { state, dispatch };
-
-  return <Context.Provider value={value}>{children}</Context.Provider>;
-};
-
-export { Context, Provider };
+  return (
+    <UserContext.Provider value={{ getUserLoggedIn, user }}>
+      {children}
+    </UserContext.Provider>
+  );
+}

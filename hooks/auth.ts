@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import { useRouter } from "next/router";
+import { User } from "../context/context";
 
 type DecodedToken = {
   username: string;
@@ -15,6 +16,7 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
   const [reroute, setReroute] = useState(false);
   const [token, setAccessToken] = useState("");
+  const [user, setLoggedInUser] = useState<User | null>();
   const router = useRouter();
 
   useEffect(() => {
@@ -29,6 +31,9 @@ export const useAuth = () => {
       } else {
         setAccessToken(token);
         setAuthenticated(true);
+        //@ts-ignore
+        const user = JSON.parse(Cookies.get("user"));
+        setLoggedInUser(user);
       }
     } else {
       // No token found
@@ -40,10 +45,11 @@ export const useAuth = () => {
 
   const logout = () => {
     Cookies.remove("access_token");
+    Cookies.remove("user");
     setAuthenticated(false);
     router.replace("/");
     setAccessToken("");
   };
 
-  return { authenticated, loading, logout, reroute, token };
+  return { authenticated, loading, logout, reroute, token, user };
 };

@@ -4,7 +4,8 @@ import React, { useContext, useState } from "react";
 import Toast from "../../component/utils/toast";
 import useForm from "../../hooks/form";
 import { login, signup } from "../../state-mgt/auth.actions";
-import { Context } from "../../context/context";
+import { UserContext } from "../../context/context";
+import Cookies from "js-cookie";
 
 export type error = {
   message?: String;
@@ -15,7 +16,7 @@ export default function SignUp() {
   const [errors, setErrors] = useState<error[]>([]);
   const [toast, setToast] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { state, dispatch } = useContext(Context);
+  const { getUserLoggedIn } = useContext(UserContext);
 
   const initialValues = {
     email: "",
@@ -49,11 +50,7 @@ export default function SignUp() {
           withCredentials: true,
         }
       );
-
-      dispatch({
-        type: "LOGGED_IN_USER",
-        payload: loginResponse.data,
-      });
+      Cookies.set("user", JSON.stringify(loginResponse.data));
 
       if (loginResponse && signupResponse.data.user_role === "freelancer") {
         setLoading(false);

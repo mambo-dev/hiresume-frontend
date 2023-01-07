@@ -1,10 +1,12 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, useContext } from "react";
 
 import Toast from "../../component/utils/toast";
-import { Context } from "../../context/context";
+import { UserContext } from "../../context/context";
+
 import useForm from "../../hooks/form";
 import { login } from "../../state-mgt/auth.actions";
 import { error, errorSvg, successSvg } from "./signup";
@@ -13,7 +15,7 @@ export default function LogIn() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const [success, setSuccess] = useState(false);
-  const { dispatch } = useContext(Context);
+  const { getUserLoggedIn } = useContext(UserContext);
 
   const router = useRouter();
   const intialValues = {
@@ -35,10 +37,7 @@ export default function LogIn() {
         }
       );
 
-      dispatch({
-        type: "LOGGED_IN_USER",
-        payload: loginResponse.data,
-      });
+      Cookies.set("user", JSON.stringify(loginResponse.data));
 
       if (loginResponse) {
         setTimeout(() => {
