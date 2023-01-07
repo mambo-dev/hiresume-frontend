@@ -16,7 +16,7 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
   const [reroute, setReroute] = useState(false);
   const [token, setAccessToken] = useState("");
-  const [user, setLoggedInUser] = useState<User | null>();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -31,9 +31,6 @@ export const useAuth = () => {
       } else {
         setAccessToken(token);
         setAuthenticated(true);
-        //@ts-ignore
-        const user = JSON.parse(Cookies.get("user"));
-        setLoggedInUser(user);
       }
     } else {
       // No token found
@@ -51,5 +48,5 @@ export const useAuth = () => {
     setAccessToken("");
   };
 
-  return { authenticated, loading, logout, reroute, token, user };
+  return { authenticated, loading, logout, reroute, token };
 };
