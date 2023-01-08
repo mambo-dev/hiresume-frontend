@@ -75,7 +75,7 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
     return <RequireAuth reroute={reroute} loading={loading} />;
   } else {
     return (
-      <div className="flex flex-col md:flex-row ">
+      <div className="flex flex-col md:flex-row md:overflow-hidden">
         {errors.length > 0 && (
           <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
             {errors.map((error) => (
@@ -242,7 +242,7 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
             </div>
           </div>
         </div>
-        <div className="h-screen px-4 md:pr-32  py-8 bg-transparent w-full flex flex-col gap-y-4 items-start  md:w-3/5 ">
+        <div className="h-screen border-l md:overflow-y-auto px-4 md:pr-32 bg-white  shadow-lg  py-8 bg-transparent w-full flex flex-col gap-y-4 items-start  md:w-3/5 ">
           <div className="flex flex-col gap-y-4 items-start justify-start ">
             <span className="text-2xl text-teal-900 font-bold">
               Professional Summary

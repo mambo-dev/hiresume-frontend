@@ -30,10 +30,7 @@ export default function UpdateBio({
         {
           type,
           data: {
-            bio_title: values.bio_title,
-
-            bio_description: values.bio_description,
-
+            ...values,
             bio_hourly_rate: Number(values.bio_hourly_rate),
           },
         },
@@ -70,9 +67,9 @@ export default function UpdateBio({
 
   const { values, handleChange, handleSubmit } = useForm(
     {
-      bio_title: "",
-      bio_description: "",
-      bio_hourly_rate: "",
+      bio_title: current_bio_details.bio_title,
+      bio_description: current_bio_details.bio_description,
+      bio_hourly_rate: current_bio_details.bio_hourly_rate,
     },
     updateBio
   );
@@ -91,7 +88,7 @@ export default function UpdateBio({
           <input
             type="text"
             name="bio_title"
-            value={values.bio_title || current_bio_details.bio_title}
+            value={values.bio_title}
             onChange={handleChange}
             className="py-2 px-1 rounded placeholder-slate-700 border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
@@ -100,9 +97,7 @@ export default function UpdateBio({
           <label>description</label>
           <textarea
             name="bio_description"
-            value={
-              values.bio_description || current_bio_details.bio_description
-            }
+            value={values.bio_description}
             onChange={handleChange}
             className="py-2 px-1 rounded placeholder-slate-700 border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
@@ -112,9 +107,7 @@ export default function UpdateBio({
           <input
             type="number"
             name="bio_hourly_rate"
-            value={
-              values.bio_hourly_rate || current_bio_details.bio_hourly_rate
-            }
+            value={values.bio_hourly_rate}
             onChange={handleChange}
             className="py-2 px-1 rounded  placeholder-slate-700 border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
