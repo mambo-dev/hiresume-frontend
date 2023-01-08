@@ -12,6 +12,8 @@ import { error, errorSvg, successSvg } from "../auth/signup";
 import { freelancer_education, ProfileInterface } from "./types";
 import { GetServerSideProps } from "next";
 import { User, UserContext } from "../../context/context";
+import Modal from "../../component/utils/modal";
+import UpdateBio from "../../component/freelancer/profile/bio/update-bio";
 
 export default function Profile<NextPageWithLayout>({ data }: any) {
   const { authenticated, reroute, loading, token } = useAuth();
@@ -19,11 +21,12 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
   const [updateAvailability, setUpdateAvailability] = useState(false);
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [available, setAvailable] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const router = useRouter();
 
   const { success, profile } = data;
-
+  console.log(profile);
   useEffect(() => {
     setProfileSuccess(true);
     if (!success) {
@@ -248,8 +251,15 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
               <h1 className="text-xl text-teal-800 font-bold">
                 {profile?.freelancer_Bio.bio_title}
               </h1>
-
-              <button>
+              <Modal isOpen={openModal} setIsOpen={setOpenModal}>
+                <UpdateBio
+                  token={token}
+                  bio_id={profile?.freelancer_Bio.id}
+                  freelancer_id={profile?.id}
+                  current_bio_details={profile?.freelancer_Bio}
+                />
+              </Modal>
+              <button onClick={() => setOpenModal(true)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
