@@ -1,20 +1,23 @@
 import axios from "axios";
 import React, { useState } from "react";
-import useForm from "../../../hooks/form";
-import { error, errorSvg, successSvg } from "../../../pages/auth/signup";
-import Toast from "../../utils/toast";
+import useAxios, { axiosRequestActions } from "../../../../hooks/axios";
+import useForm from "../../../../hooks/form";
+import { error, errorSvg, successSvg } from "../../../../pages/auth/signup";
+import Toast from "../../../utils/toast";
+import Education, { EducationValues } from "../../onboarding/education";
 
-export type EducationValues = {
-  school: string;
-  year_From: string;
-  year_to: string;
+type EducationType = {
+  token: string;
+  setOpenEducationModal: any;
 };
-export default function Education({ token }: any) {
-  const [loading, setLoading] = useState(false);
 
+export default function AddEducation({
+  token,
+  setOpenEducationModal,
+}: EducationType) {
   const [success, setSuccess] = useState(false);
-  const [toast, setToast] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
+  const [toast, setToast] = useState(false);
   const initialValues = {
     school: "",
     year_from: "",
@@ -34,47 +37,26 @@ export default function Education({ token }: any) {
     });
   };
 
-  const handleEducationAxios = async (values: EducationValues) => {
-    try {
-      setLoading(true);
-      const submitEducation = await axios.post(
-        `http://localhost:4000/freelancers/education`,
-        {
-          ...values,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (submitEducation) {
-        setSuccess(true);
-        setLoading(false);
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      }
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-      setErrors((prevErrors) => [
-        ...prevErrors,
-        {
-          message: "could not create education ",
-        },
-      ]);
+  const { handleSubmitResponse, loading, response } = useAxios(
+    "freelancers/education",
+    setErrors,
+    errors,
+    setOpenEducationModal,
+    "post",
+    {
+      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-  };
+  );
 
   const { values, handleChange, handleSubmit } = useForm(
     initialValues,
-    handleEducationAxios
+    handleSubmitResponse
   );
   return (
-    <div className="w-full  h-full flex flex-col items-center gap-y-4 justify-center py-16 px-2 bg-inherit">
+    <div className="w-full  h-full flex flex-col items-center justify-center gap-y-4  py-16 px-2 bg-inherit">
       {errors.length > 0 && toast && (
         <div className="h-screen w-1/2 absolute top-1 bottom-0 right-10 flex flex-col items-end justify-start gap-y-4">
           {errors.map((error) => (
@@ -115,10 +97,7 @@ export default function Education({ token }: any) {
         </div>
       )}
       <div className="font-medium text-teal-800">
-        <p>
-          brief overview of your past eduaction ps you can create{" "}
-          <strong>multiple</strong> values after submitting
-        </p>
+        <p>add education background</p>
       </div>
       <form
         onSubmit={(e) => {
@@ -134,7 +113,7 @@ export default function Education({ token }: any) {
             handleSubmit(e);
           }
         }}
-        className="h-full w-full flex flex-col gap-y-4 sm:w-4/5 md:w-3/4 lg:w-1/2 "
+        className="h-full w-full flex flex-col gap-y-6 "
       >
         <div className="flex flex-col w-full">
           <label>school</label>

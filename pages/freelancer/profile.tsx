@@ -14,6 +14,7 @@ import { GetServerSideProps } from "next";
 import { User, UserContext } from "../../context/context";
 import Modal from "../../component/utils/modal";
 import UpdateBio from "../../component/freelancer/profile/bio/update-bio";
+import AddEducation from "../../component/freelancer/profile/education/add-education";
 
 export default function Profile<NextPageWithLayout>({ data }: any) {
   const { authenticated, reroute, loading, token } = useAuth();
@@ -22,11 +23,12 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [available, setAvailable] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openEducationModal, setOpenEducationModal] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const router = useRouter();
 
   const { success, profile } = data;
-  console.log(profile);
+
   useEffect(() => {
     setProfileSuccess(true);
     if (!success) {
@@ -365,7 +367,19 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
           <div className="flex flex-col gap-y-2 items-start justify-start w-full">
             <span className="text-2xl text-teal-900 font-bold flex items-center justify-between w-full">
               <p>Education</p>{" "}
-              <button className="inline-flex items-center justify-center">
+              <Modal
+                isOpen={openEducationModal}
+                setIsOpen={setOpenEducationModal}
+              >
+                <AddEducation
+                  token={token}
+                  setOpenEducationModal={setOpenEducationModal}
+                />
+              </Modal>
+              <button
+                onClick={() => setOpenEducationModal(true)}
+                className="inline-flex items-center justify-center"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
