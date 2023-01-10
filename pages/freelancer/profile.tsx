@@ -15,6 +15,7 @@ import { User, UserContext } from "../../context/context";
 import Modal from "../../component/utils/modal";
 import UpdateBio from "../../component/freelancer/profile/bio/update-bio";
 import AddEducation from "../../component/freelancer/profile/education/add-education";
+import UpdateEducation from "../../component/freelancer/profile/education/update-education";
 
 export default function Profile<NextPageWithLayout>({ data }: any) {
   const { authenticated, reroute, loading, token } = useAuth();
@@ -24,6 +25,8 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
   const [available, setAvailable] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openEducationModal, setOpenEducationModal] = useState(false);
+  const [openUpdateEducationModal, setOpenUpdateEducationModal] =
+    useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const router = useRouter();
 
@@ -399,7 +402,7 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
             {profile?.freelancer_education.map(
               (education: freelancer_education, index: number) => (
                 <div
-                  key={index}
+                  key={education.id}
                   className="h-[fit-content] py-2 w-full border-b border-gray-200 flex items-center justify-between "
                 >
                   <div className="w-3/4 flex flex-col items-start justify-start  ">
@@ -417,7 +420,7 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
                       {new Date(education.education_year_to).getFullYear()}
                     </span>
                     <div className="flex items-center gap-x-2 ">
-                      <button>
+                      <button onClick={() => setOpenUpdateEducationModal(true)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -433,6 +436,19 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
                           />
                         </svg>
                       </button>
+                      <Modal
+                        isOpen={openUpdateEducationModal}
+                        setIsOpen={setOpenUpdateEducationModal}
+                      >
+                        <UpdateEducation
+                          token={token}
+                          currentEducationDetails={education}
+                          education_id={education.id}
+                          freelancer_id={profile.id}
+                          type="education"
+                        />
+                      </Modal>
+
                       <button>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export default function useForm(initialValues: any, axiosRequest: any) {
+export default function useForm(
+  initialValues: any,
+  axiosRequest: any,
+  type?: string
+) {
   const [values, setValues] = useState(initialValues);
 
   function handleChange(
@@ -16,8 +20,17 @@ export default function useForm(initialValues: any, axiosRequest: any) {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    axiosRequest(values);
+    //@ts-ignore
+    if (type?.length > 0) {
+      axiosRequest({
+        data: {
+          ...values,
+        },
+        type: type,
+      });
+    } else {
+      axiosRequest(values);
+    }
   }
 
   return {

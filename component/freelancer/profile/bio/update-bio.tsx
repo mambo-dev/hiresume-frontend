@@ -39,10 +39,6 @@ export default function UpdateBio({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          params: {
-            freelancer_id,
-            idOfEntity: bio_id,
-          },
         }
       );
 

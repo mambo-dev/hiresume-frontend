@@ -30,7 +30,7 @@ export default function useAxios(
     try {
       setLoading(true);
       //@ts-ignore
-      const success = await axios["post"](
+      const success = await axios[axiosReqAction](
         `${process.env.NEXT_PUBLIC_SERVER_LINK}/${link}`,
         submitValues,
 

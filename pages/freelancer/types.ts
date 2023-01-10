@@ -14,6 +14,7 @@ type freelancer_experience = {
 };
 
 export type freelancer_education = {
+  id: number;
   education_school: string;
   education_year_from: string;
   education_year_to: string;
