@@ -19,23 +19,46 @@ export default function useAxios(
   setErrors: any,
   errors: any,
   axiosReqAction: string,
-  setOpenModal?: any,
-  axiosOptions?: AxiosRequestConfig
+  axiosOptions?: AxiosRequestConfig,
+  setOpenModal?: any
 ) {
+  console.log(axiosOptions);
   const [response, setResponse] = useState({});
-
   const [loading, setLoading] = useState(false);
 
   async function handleSubmitResponse(submitValues: any) {
     try {
       setLoading(true);
-      //@ts-ignore
-      const success = await axios[axiosReqAction](
-        `${process.env.NEXT_PUBLIC_SERVER_LINK}/${link}`,
-        submitValues,
-
-        axiosOptions
-      );
+      let success;
+      switch (axiosReqAction) {
+        case "post":
+          success = await axios.post(
+            `${process.env.NEXT_PUBLIC_SERVER_LINK}/${link}`,
+            submitValues,
+            axiosOptions
+          );
+          break;
+        case "patch":
+          success = await axios.patch(
+            `${process.env.NEXT_PUBLIC_SERVER_LINK}/${link}`,
+            submitValues,
+            axiosOptions
+          );
+          break;
+        case "put":
+          success = await axios.put(
+            `${process.env.NEXT_PUBLIC_SERVER_LINK}/${link}`,
+            submitValues,
+            axiosOptions
+          );
+          break;
+        case "delete":
+          success = await axios.delete(
+            `${process.env.NEXT_PUBLIC_SERVER_LINK}/${link}`,
+            axiosOptions
+          );
+          break;
+      }
 
       if (success) {
         setLoading(false);

@@ -6,7 +6,7 @@ import Toast from "../../../utils/toast";
 
 type Update = {
   freelancer_id: number;
-  education_id: number;
+  education_id: number | null | undefined;
   type: string;
   token: string;
   currentEducationDetails: any;
@@ -29,13 +29,13 @@ export default function UpdateEducation({
     setErrors,
     errors,
     "patch",
-    setOpenModal,
     {
       withCredentials: true,
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
+    setOpenModal
   );
 
   const initialValues = {

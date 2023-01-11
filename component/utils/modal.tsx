@@ -16,7 +16,7 @@ export default function Modal({ isOpen, setIsOpen, children }: Modal) {
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4 h-screen">
-        <Dialog.Panel className=" w-full  md:w-1/2 rounded bg-white h-3/4 overflow-auto ">
+        <Dialog.Panel className=" w-full  md:w-1/2 rounded bg-white h-[fit-content] overflow-auto ">
           {children}
         </Dialog.Panel>
       </div>
