@@ -82,7 +82,7 @@ export default function Experience({ token }: any) {
     handleEducationAxios
   );
 
-  console.log(values);
+
   return (
     <div className="w-full  h-full flex flex-col items-center gap-y-4 justify-center py-16 px-2 bg-inherit">
       {errors.length > 0 && toast && (
