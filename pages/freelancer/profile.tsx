@@ -17,6 +17,9 @@ import UpdateBio from "../../component/freelancer/profile/bio/update-bio";
 import AddEducation from "../../component/freelancer/profile/education/add-education";
 import UpdateEducation from "../../component/freelancer/profile/education/update-education";
 import DeleteEducation from "../../component/freelancer/profile/education/delete-education";
+import AddExperience from "../../component/freelancer/profile/experience/add-experience";
+import UpdateExperience from "../../component/freelancer/profile/experience/update-experience";
+import DeleteExperience from "../../component/freelancer/profile/experience/delete-experience";
 
 export default function Profile<NextPageWithLayout>({ data }: any) {
   const { authenticated, reroute, loading, token } = useAuth();
@@ -26,11 +29,16 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
   const [available, setAvailable] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openEducationModal, setOpenEducationModal] = useState(false);
+  const [openExpeirenceModal, setOpenExperienceModal] = useState(false);
   const [openUpdateEducationModal, setOpenUpdateEducationModal] =
+    useState(false);
+  const [openUpdateExperienceModal, setOpenUpdateExperienceModal] =
     useState(false);
   const [currentEducation, setCurrentEducation] =
     useState<freelancer_education | null>();
+  const [currentExperience, setCurrentExperience] = useState<any>();
   const [openDeleteEducation, setOpenDeleteEducation] = useState(false);
+  const [openDeleteExperience, setOpenDeleteExperience] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const router = useRouter();
 
@@ -292,7 +300,16 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
           <div className="flex flex-col gap-y-2 items-start justify-start w-full">
             <span className="text-2xl text-teal-900 font-bold flex items-center justify-between w-full">
               <p>Work Experience</p>{" "}
-              <button className="inline-flex items-center justify-center">
+              <Modal
+                isOpen={openExpeirenceModal}
+                setIsOpen={setOpenExperienceModal}
+              >
+                <AddExperience token={token} setOpen={setOpenExperienceModal} />
+              </Modal>
+              <button
+                onClick={() => setOpenExperienceModal(true)}
+                className="inline-flex items-center justify-center"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -332,8 +349,24 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
                     <span className="p-1 rounded-2xl px-2 bg-teal-100 text-teal-700 font-bold">
                       remote
                     </span>
+                    <Modal
+                      isOpen={openUpdateExperienceModal}
+                      setIsOpen={setOpenUpdateExperienceModal}
+                    >
+                      <UpdateExperience
+                        freelancer_id={profile.id}
+                        currentExperienceValues={currentExperience}
+                        token={token}
+                        setOpen={setOpenUpdateExperienceModal}
+                      />
+                    </Modal>
                     <div className="flex items-center gap-x-2 ">
-                      <button>
+                      <button
+                        onClick={() => {
+                          setCurrentExperience(experience);
+                          setOpenUpdateExperienceModal(true);
+                        }}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -349,7 +382,24 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
                           />
                         </svg>
                       </button>
-                      <button>
+                      <Modal
+                        isOpen={openDeleteExperience}
+                        setIsOpen={setOpenDeleteExperience}
+                      >
+                        <DeleteExperience
+                          type="experience"
+                          freelancer_id={profile.id}
+                          currentExperienceDetails={currentExperience}
+                          token={token}
+                          setOpen={setOpenDeleteExperience}
+                        />
+                      </Modal>
+                      <button
+                        onClick={() => {
+                          setCurrentExperience(experience);
+                          setOpenDeleteExperience(true);
+                        }}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"

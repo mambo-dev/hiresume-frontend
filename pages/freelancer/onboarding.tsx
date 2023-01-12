@@ -7,6 +7,7 @@ import Education from "../../component/freelancer/onboarding/education";
 import Experience from "../../component/freelancer/onboarding/experience";
 import { useAuth } from "../../hooks/auth";
 import RequireAuth from "../../component/utils/require-auth";
+import Skills from "../../component/freelancer/onboarding/skills";
 
 export default function OnBoarding() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -29,6 +30,11 @@ export default function OnBoarding() {
       id: 3,
       step: "experience",
       stepHtml: <Experience token={token} />,
+    },
+    {
+      id: 4,
+      step: "skills",
+      stepHtml: <Skills token={token} />,
     },
   ];
 

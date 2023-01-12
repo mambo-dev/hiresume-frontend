@@ -1,26 +1,25 @@
 import React, { useState } from "react";
 import useAxios from "../../../../hooks/axios";
-import useForm from "../../../../hooks/form";
 import { error } from "../../../../pages/auth/signup";
-import { freelancer_education } from "../../../../pages/freelancer/types";
 
 type DeleteType = {
-  currentEducationDetails: freelancer_education | undefined | null;
+  currentExperienceDetails: any;
   setOpen: any;
   freelancer_id: number;
   type: string;
   token: string;
 };
-export default function DeleteEducation({
+
+export default function DeleteExperience({
   setOpen,
-  currentEducationDetails,
+  currentExperienceDetails,
   freelancer_id,
   type,
   token,
 }: DeleteType) {
   const [deleteErrors, setDeleteErrors] = useState<error[]>([]);
   const { handleSubmitResponse, errors, loading, response } = useAxios(
-    `freelancers/delete-any/${type}/${freelancer_id}/${currentEducationDetails?.id}`,
+    `freelancers/delete-any/${type}/${freelancer_id}/${currentExperienceDetails?.id}`,
     setDeleteErrors,
     deleteErrors,
     "delete",
@@ -35,7 +34,7 @@ export default function DeleteEducation({
   const initialValues = {
     freelancer_id,
     type,
-    idOfEntity: currentEducationDetails?.id,
+    idOfEntity: currentExperienceDetails?.id,
   };
 
   const handleDeleteEducation = () => {
@@ -65,13 +64,13 @@ export default function DeleteEducation({
           </div>
           <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
-              delete education
+              delete experience
             </h3>
             <div className="mt-2">
               <p className="text-sm text-gray-500">
-                Are you sure you want to delete your education background? All
+                Are you sure you want to delete your experience background? All
                 of your data will be permanently removed. You will have to re
-                add your education status.
+                add your experience status.
               </p>
             </div>
           </div>

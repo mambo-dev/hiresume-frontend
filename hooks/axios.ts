@@ -25,6 +25,7 @@ export default function useAxios(
   console.log(axiosOptions);
   const [response, setResponse] = useState({});
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   async function handleSubmitResponse(submitValues: any) {
     try {
@@ -61,12 +62,14 @@ export default function useAxios(
       }
 
       if (success) {
+        setSuccess(true);
         setLoading(false);
         setResponse(success);
         setOpenModal(false);
       }
     } catch (error) {
       console.log(error);
+      setSuccess(false);
       setLoading(false);
       setResponse({});
       setErrors((prevErrors: any) => [
@@ -83,5 +86,6 @@ export default function useAxios(
     response,
     loading,
     errors,
+    success,
   };
 }
