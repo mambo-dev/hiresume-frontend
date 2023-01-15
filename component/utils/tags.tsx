@@ -10,7 +10,7 @@ export default function Tag({
 }: any) {
   return (
     <span
-      className={`h-10 text-gray-700 gap-y-2 shadow border boder-gray-300 w-full rounded-full flex items-center justify-around p-2 bg-white  `}
+      className={`h-10 truncate text-gray-700 gap-y-2 shadow border boder-gray-300 w-full rounded-full flex items-center justify-around p-2 bg-white  `}
     >
       {title}
       {button}

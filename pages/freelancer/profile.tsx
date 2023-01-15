@@ -43,7 +43,7 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
   const router = useRouter();
 
   const { success, profile } = data;
-
+  console.log(profile);
   useEffect(() => {
     setProfileSuccess(true);
     if (!success) {
@@ -550,17 +550,14 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
             )}
           </div>
           <div className="flex flex-col gap-y-2 items-start justify-start w-full">
-            <span className="text-2xl text-teal-900 font-bold">Files</span>
-            {[1].map((number) => (
-              <div className="h-24  text-blue-800 hover:underline w-full border-b border-gray-200">
-                <Link href="https://hiresumefiles.s3.ap-northeast-1.amazonaws.com/7b3b5d60-ccb6-47f5-9be7-bb2b35722682-design-3.png?AWSAccessKeyId=AKIAUZRZESOPSM4RES74&Expires=1673004502&Signature=609w038WMnMAgICYUwKeYOMROGk%3D">
-                  <div className="flex items-center  gap-x-2">
-                    <img src="/images/icons8-png-24.png" alt="file-icon" />
-                    <p>design-3.png</p>
-                  </div>
-                </Link>
-              </div>
-            ))}
+            <span className="text-2xl text-teal-900 font-bold">Skills</span>
+            <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-2">
+              {profile.returnSkill.map((skill: any) => (
+                <span className="bg-gray-200 font-semibold text-gray-900 py-2 px-1 rounded shadow">
+                  {skill.skill.skill_name}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>

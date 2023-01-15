@@ -8,13 +8,15 @@ import Experience from "../../component/freelancer/onboarding/experience";
 import { useAuth } from "../../hooks/auth";
 import RequireAuth from "../../component/utils/require-auth";
 import Skills from "../../component/freelancer/onboarding/skills";
+import { GetServerSideProps } from "next";
+import axios from "axios";
 
-export default function OnBoarding() {
+export default function OnBoarding({ data }: any) {
   const [currentStep, setCurrentStep] = useState(0);
   const [finalStep, setFinalStep] = useState(false);
   const router = useRouter();
   const { authenticated, reroute, loading, token } = useAuth();
-
+  const { allSkills } = data;
   const steps = [
     {
       id: 1,
@@ -34,7 +36,7 @@ export default function OnBoarding() {
     {
       id: 4,
       step: "skills",
-      stepHtml: <Skills token={token} />,
+      stepHtml: <Skills token={token} data={allSkills} />,
     },
   ];
 
@@ -103,3 +105,32 @@ export default function OnBoarding() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const getSkills = await axios.get(
+      `http://localhost:4000/freelancers/getSkills`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    return {
+      props: {
+        data: {
+          allSkills: getSkills.data,
+          success: true,
+        },
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        data: {
+          skills: {},
+          success: false,
+        },
+      },
+    };
+  }
+};

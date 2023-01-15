@@ -8,7 +8,6 @@ type ComboBox = {
   data: any;
   setQuery: any;
   filteredData: any;
-  key: any;
 };
 
 export default function ComboBox({
@@ -18,23 +17,19 @@ export default function ComboBox({
   data,
   setQuery,
   filteredData,
-  key,
 }: ComboBox) {
-  //   const filteredData =
-  //   query === ''
-  //     ? data
-  //     : data.filter((data) => {
-  //         return person.name.toLowerCase().includes(query.toLowerCase())
-  //       })
   return (
     <Combobox value={selectedValue} onChange={setSelectedValues}>
       <Combobox.Input
         onChange={(event) => setQuery(event.target.value)}
         displayValue={() => displayValue}
+        className="py-2 px-1 rounded  border border-gray-300 
+        
+        focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 w-full"
       />
       <Combobox.Options>
-        {filteredData.map((data: any) => (
-          <Combobox.Option key={key} value={data} as={Fragment}>
+        {filteredData.map((data: any, index: number) => (
+          <Combobox.Option key={data.id} value={data} as={Fragment}>
             {({ active, selected }) => (
               <li
                 className={`${
