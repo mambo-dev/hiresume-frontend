@@ -64,6 +64,7 @@ export default function LogIn() {
       }
     } catch (error) {
       console.log(error);
+      setLoading(false);
       setErrors((prevErrors) => [
         ...prevErrors,
         {
