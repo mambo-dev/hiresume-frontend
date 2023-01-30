@@ -1,9 +1,11 @@
 import axios from "axios";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
+import CreateJob from "../../component/clients/create/create-job";
 import ClientLayout from "../../component/layouts/client-layout";
 
 export default function Client({ data }: any) {
   const { jobs, error } = data;
+  const [openCreateJob, setOpenCreateJob] = useState(false);
 
   if (error) {
     <div>{error.message}</div>;
@@ -13,14 +15,18 @@ export default function Client({ data }: any) {
     <div className="w-full h-full">
       {jobs?.length <= 0 ? (
         <div className="w-full h-full  flex  items-center justify-center">
-          <div className="w-full px-2 flex items-center flex-col gap-y-2">
+          <div className="w-fit py-10 shadow px-4 border border-gray-200 rounded  flex items-center flex-col gap-y-2">
             <p className="font-bold text-teal-900">
               you curently have no jobs start creating
             </p>
-            <button className="m-auto bg-teal-500 inline-flex items-center justify-center gap-y-2 py-2 px-1 rounded text-white font-semibold">
+            <button
+              onClick={() => setOpenCreateJob(true)}
+              className="m-auto bg-teal-500 inline-flex items-center justify-center gap-y-2 py-2 px-3.5 rounded text-white font-semibold"
+            >
               create job
             </button>
           </div>
+          <CreateJob open={openCreateJob} setOpen={setOpenCreateJob} />
         </div>
       ) : (
         <div>you have some jobs</div>
