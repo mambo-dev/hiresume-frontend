@@ -5,8 +5,9 @@ import CreateForm from "./create-form";
 type CreateJobProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  token: string;
 };
-export default function CreateJob({ open, setOpen }: CreateJobProps) {
+export default function CreateJob({ open, setOpen, token }: CreateJobProps) {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -75,7 +76,7 @@ export default function CreateJob({ open, setOpen }: CreateJobProps) {
                       </Dialog.Title>
                     </div>
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                      <CreateForm />
+                      <CreateForm token={token} />
                     </div>
                   </div>
                 </Dialog.Panel>

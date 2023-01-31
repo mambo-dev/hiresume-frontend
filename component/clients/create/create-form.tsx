@@ -1,5 +1,18 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import useDebounce from "../../../hooks/debounce";
 import useForm from "../../../hooks/form";
+import { error } from "../../../pages/auth/signup";
+import SearchBox from "../../utils/form/search-box";
+
+const myHeaders = new Headers();
+myHeaders.append("apikey", process.env.NEXT_PUBLIC_API_KEY || "");
+
+const requestOptions = {
+  method: "GET",
+  redirect: "follow",
+  headers: myHeaders,
+};
 
 type job = {
   job_title: string;
@@ -9,17 +22,57 @@ type job = {
   job_hourly_to: number;
   job_fixed_price?: number;
   job_level: string;
-  skills_required: Skills[];
 };
 
 type Skills = {
   skill_id: number;
 };
 
-export default function CreateForm() {
+export default function CreateForm({ token }: any) {
   const [hourly, setHourly] = useState(false);
   const [fixed, setFixed] = useState(false);
-  const submitAxios = () => {};
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState<error[]>([]);
+
+  const submitAxios = async () => {
+    try {
+      setLoading(true);
+      const createJob = await axios.post(
+        `http://localhost:4000/clients/create-job`,
+        {
+          ...values,
+          job_hourly_from: Number(values.job_hourly_from),
+          job_hourly_to: Number(values.job_hourly_to),
+          job_fixed_price: Number(values.job_fixed_price),
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (createJob) {
+        setLoading(false);
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 3000);
+      }
+    } catch (error: any) {
+      setLoading(false);
+      setErrors([
+        {
+          message: error.message,
+        },
+      ]);
+      setTimeout(() => {
+        setErrors([]);
+      }, 3000);
+    }
+  };
   const initialValues: job = {
     job_title: "",
     job_description: "",
@@ -27,8 +80,7 @@ export default function CreateForm() {
     job_hourly_from: 0,
     job_hourly_to: 0,
     job_fixed_price: 0,
-    job_level: "",
-    skills_required: [],
+    job_level: "entry",
   };
 
   const { values, handleChange, handleSubmit } = useForm(
@@ -58,6 +110,17 @@ export default function CreateForm() {
           onChange={handleChange}
           value={values.job_description}
           placeholder="enter description of your job"
+          className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+        />
+      </div>
+      <div className="flex flex-col w-full gap-y-2">
+        <label className="font-semibold text-sm text-teal-700">length</label>
+        <input
+          type="text"
+          name="job_length"
+          onChange={handleChange}
+          value={values.job_length}
+          placeholder="one month, two months..."
           className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
         />
       </div>
@@ -110,10 +173,9 @@ export default function CreateForm() {
             </label>
             <input
               type="number"
-              name="job_length"
+              name="job_hourly_from"
               onChange={handleChange}
               value={values.job_hourly_from}
-              placeholder="one month, two months"
               className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
             />
           </div>
@@ -123,10 +185,9 @@ export default function CreateForm() {
             </label>
             <input
               type="number"
-              name="job_length"
+              name="job_hourly_to"
               onChange={handleChange}
               value={values.job_hourly_to}
-              placeholder="one month, two months"
               className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
             />
           </div>
@@ -142,7 +203,6 @@ export default function CreateForm() {
             name="job_fixed_price"
             onChange={handleChange}
             value={values.job_fixed_price}
-            placeholder="one month, two months"
             className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
         </div>
@@ -165,6 +225,39 @@ export default function CreateForm() {
           )}
         </select>
       </div>
+      {loading ? (
+        <button
+          type="button"
+          disabled={true}
+          className="mt-2 inline-flex items-center justify-center bg-opacity-70 gap-x-2 shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+        >
+          <div
+            className="animate-spin border-b-2   border-l-2 inline-block w-5 h-5 border rounded-full"
+            role="status"
+          >
+            <span className="hidden">Loading...</span>
+          </div>
+          <span>loading...</span>
+        </button>
+      ) : (
+        <button
+          type="submit"
+          className="mt-2 inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+        >
+          create job
+        </button>
+      )}
+      {errors.length > 0 &&
+        errors.map((error: error) => {
+          <p className="font-bold text-sm text-red-500 m-auto mt-2">
+            {error.message}
+          </p>;
+        })}
+      {success && (
+        <p className="font-bold text-sm text-green-500 m-auto mt-2">
+          succesfully created job
+        </p>
+      )}
     </form>
   );
 }

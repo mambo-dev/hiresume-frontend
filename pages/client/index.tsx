@@ -1,14 +1,29 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { ReactElement, useState } from "react";
 import CreateJob from "../../component/clients/create/create-job";
+import Job from "../../component/clients/create/get/jobs";
 import ClientLayout from "../../component/layouts/client-layout";
 
 export default function Client({ data }: any) {
-  const { jobs, error } = data;
-  const [openCreateJob, setOpenCreateJob] = useState(false);
+  const { jobs, error, token, user } = data;
 
-  if (error) {
-    <div>{error.message}</div>;
+  const [openCreateJob, setOpenCreateJob] = useState(false);
+  const router = useRouter();
+  if (error?.message.length > 0) {
+    setTimeout(() => {
+      router.replace("/auth/login");
+    }, 5000);
+
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="w-fit py-10 shadow px-4 border border-gray-200 rounded  flex items-center flex-col gap-y-2">
+          <p className="font-bold text-red-500">
+            Kindly log in to access resource if problem persists contact admin
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -26,10 +41,34 @@ export default function Client({ data }: any) {
               create job
             </button>
           </div>
-          <CreateJob open={openCreateJob} setOpen={setOpenCreateJob} />
+          <CreateJob
+            open={openCreateJob}
+            setOpen={setOpenCreateJob}
+            token={token}
+          />
         </div>
       ) : (
-        <div>you have some jobs</div>
+        <div className="w-full py-2 px-2 flex flex-col gap-y-2">
+          <div className="w-full flex items-center justify-end ">
+            <button
+              onClick={() => setOpenCreateJob(true)}
+              className=" bg-teal-500 inline-flex items-center justify-center gap-y-2 py-2 px-3.5 rounded text-white font-semibold"
+            >
+              create job
+            </button>
+            <CreateJob
+              open={openCreateJob}
+              setOpen={setOpenCreateJob}
+              token={token}
+            />
+          </div>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:px-2 py-4 gap-4 ">
+            {jobs?.map((job: any) => (
+              <Job key={job.id} job={job} user={user} />
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
@@ -38,6 +77,17 @@ export default function Client({ data }: any) {
 export async function getServerSideProps<GetServerSideProps>(context: any) {
   try {
     const { req } = context;
+    //@ts-ignore
+
+    const user: User = JSON.parse(req.cookies.user);
+    if (user.user_role !== "client") {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/auth/login",
+        },
+      };
+    }
 
     const loggedInClientJobs = await axios.get(
       `http://localhost:4000/clients/client-jobs`,
@@ -48,13 +98,16 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
         },
       }
     );
+
     console.log(loggedInClientJobs.data);
 
     return {
       props: {
         data: {
           jobs: loggedInClientJobs.data,
+          token: req.cookies.access_token,
           error: null,
+          user: user,
         },
       },
     };
@@ -62,7 +115,9 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
     return {
       props: {
         data: {
+          user: null,
           jobs: null,
+          token: null,
           error: {
             message: error.message,
           },

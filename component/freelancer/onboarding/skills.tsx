@@ -20,7 +20,7 @@ export default function Skills({ token, data }: any) {
   const [querySkills, setQuerySkills] = useState<skill[]>([]);
   const [query, setQuery] = useState("");
   const [selectedValue, setSelectedValues] = useState("");
-  const [errors, setErrors] = useState<error>([]);
+  const [errors, setErrors] = useState<error[]>([]);
 
   const debouncedSearch = useDebounce(query, 500);
 
