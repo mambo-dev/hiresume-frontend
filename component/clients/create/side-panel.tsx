@@ -1,13 +1,22 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import CreateForm from "./create-form";
+import UpdateForm from "./update-form";
 
-type CreateJobProps = {
+type sidePanelProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   token: string;
+  action: string;
+  data?: any;
 };
-export default function CreateJob({ open, setOpen, token }: CreateJobProps) {
+export default function SidePanel({
+  open,
+  setOpen,
+  token,
+  action,
+  data,
+}: sidePanelProps) {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -72,11 +81,14 @@ export default function CreateJob({ open, setOpen, token }: CreateJobProps) {
                   <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
                     <div className="px-4 sm:px-6">
                       <Dialog.Title className="text-lg font-medium text-gray-900">
-                        create job
+                        {action} job
                       </Dialog.Title>
                     </div>
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                      <CreateForm token={token} />
+                      {action === "create" && <CreateForm token={token} />}
+                      {action === "update" && (
+                        <UpdateForm token={token} job={data} />
+                      )}
                     </div>
                   </div>
                 </Dialog.Panel>

@@ -1,34 +1,10 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import useDebounce from "../../../hooks/debounce";
+import { useState } from "react";
 import useForm from "../../../hooks/form";
 import { error } from "../../../pages/auth/signup";
-import SearchBox from "../../utils/form/search-box";
+import { job } from "./create-form";
 
-const myHeaders = new Headers();
-myHeaders.append("apikey", process.env.NEXT_PUBLIC_API_KEY || "");
-
-const requestOptions = {
-  method: "GET",
-  redirect: "follow",
-  headers: myHeaders,
-};
-
-export type job = {
-  job_title: string;
-  job_description: string;
-  job_length: string;
-  job_hourly_from: number;
-  job_hourly_to: number;
-  job_fixed_price?: number;
-  job_level: string;
-};
-
-type Skills = {
-  skill_id: number;
-};
-
-export default function CreateForm({ token }: any) {
+export default function UpdateForm({ token, job }: any) {
   const [hourly, setHourly] = useState(false);
   const [fixed, setFixed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,8 +14,8 @@ export default function CreateForm({ token }: any) {
   const submitAxios = async () => {
     try {
       setLoading(true);
-      const createJob = await axios.post(
-        `http://localhost:4000/clients/create-job`,
+      const update = await axios.put(
+        `http://localhost:4000/clients/update-job/${job.id}`,
         {
           ...values,
           job_hourly_from: Number(values.job_hourly_from),
@@ -54,7 +30,7 @@ export default function CreateForm({ token }: any) {
         }
       );
 
-      if (createJob) {
+      if (update) {
         setLoading(false);
         setSuccess(true);
         setTimeout(() => {
@@ -73,14 +49,15 @@ export default function CreateForm({ token }: any) {
       }, 3000);
     }
   };
+
   const initialValues: job = {
-    job_title: "",
-    job_description: "",
-    job_length: "",
-    job_hourly_from: 0,
-    job_hourly_to: 0,
-    job_fixed_price: 0,
-    job_level: "entry",
+    job_title: job.job_title,
+    job_description: job.job_description,
+    job_length: job.job_length,
+    job_hourly_from: job.job_hourly_from,
+    job_hourly_to: job.job_hourly_to,
+    job_fixed_price: job.job_fixed_price,
+    job_level: job.job_level,
   };
 
   const { values, handleChange, handleSubmit } = useForm(
@@ -177,7 +154,8 @@ export default function CreateForm({ token }: any) {
               name="job_hourly_from"
               onChange={handleChange}
               value={values.job_hourly_from}
-              className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+              disabled={job.job_fixed_price > 0}
+              className="py-2 px-1 rounded disabled:bg-opacity-50  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
             />
           </div>
           <div className="flex flex-col w-full gap-y-2">
@@ -189,7 +167,8 @@ export default function CreateForm({ token }: any) {
               name="job_hourly_to"
               onChange={handleChange}
               value={values.job_hourly_to}
-              className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+              disabled={job.job_fixed_price > 0}
+              className="py-2 px-1 rounded disabled:bg-opacity-50  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
             />
           </div>
         </div>
@@ -204,7 +183,8 @@ export default function CreateForm({ token }: any) {
             name="job_fixed_price"
             onChange={handleChange}
             value={values.job_fixed_price}
-            className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+            disabled={job.job_hourly_from > 0}
+            className="py-2 px-1 rounded  disabled:bg-opacity-50 border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
         </div>
       )}
@@ -245,7 +225,7 @@ export default function CreateForm({ token }: any) {
           type="submit"
           className="mt-2 inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
         >
-          create job
+          update job
         </button>
       )}
       {errors.length > 0 &&
@@ -256,7 +236,7 @@ export default function CreateForm({ token }: any) {
         })}
       {success && (
         <p className="font-bold text-sm text-green-500 m-auto mt-2">
-          succesfully created job
+          succesfully updated job
         </p>
       )}
     </form>

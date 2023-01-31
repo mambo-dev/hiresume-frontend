@@ -1,14 +1,17 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { ReactElement, useState } from "react";
-import CreateJob from "../../component/clients/create/create-job";
+
 import Job from "../../component/clients/create/get/jobs";
 import ClientLayout from "../../component/layouts/client-layout";
+import jwt_decode from "jwt-decode";
+import SidePanel from "../../component/clients/create/side-panel";
 
 export default function Client({ data }: any) {
   const { jobs, error, token, user } = data;
 
   const [openCreateJob, setOpenCreateJob] = useState(false);
+
   const router = useRouter();
   if (error?.message.length > 0) {
     setTimeout(() => {
@@ -41,31 +44,40 @@ export default function Client({ data }: any) {
               create job
             </button>
           </div>
-          <CreateJob
+          <SidePanel
             open={openCreateJob}
             setOpen={setOpenCreateJob}
             token={token}
+            action="create"
           />
         </div>
       ) : (
         <div className="w-full py-2 px-2 flex flex-col gap-y-2">
-          <div className="w-full flex items-center justify-end ">
+          <div className="w-full flex items-center justify-end sm:px-2 py-4  ">
             <button
               onClick={() => setOpenCreateJob(true)}
               className=" bg-teal-500 inline-flex items-center justify-center gap-y-2 py-2 px-3.5 rounded text-white font-semibold"
             >
               create job
             </button>
-            <CreateJob
+            <SidePanel
               open={openCreateJob}
               setOpen={setOpenCreateJob}
               token={token}
+              action="create"
             />
           </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:px-2 py-4 gap-4 ">
             {jobs?.map((job: any) => (
-              <Job key={job.id} job={job} user={user} />
+              <Job
+                key={job.id}
+                job={job}
+                user={user}
+                open={openCreateJob}
+                setOpen={setOpenCreateJob}
+                token={token}
+              />
             ))}
           </div>
         </div>
@@ -74,12 +86,38 @@ export default function Client({ data }: any) {
   );
 }
 
+export type DecodedToken = {
+  username: string;
+  sub: string;
+  iat: number;
+  exp: number;
+};
+
 export async function getServerSideProps<GetServerSideProps>(context: any) {
   try {
     const { req } = context;
-    //@ts-ignore
 
-    const user: User = JSON.parse(req.cookies.user);
+    const user = JSON.parse(req.cookies.user);
+    if (!req.cookies.access_token) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/auth/login",
+        },
+      };
+    }
+
+    const decodedToken: DecodedToken = jwt_decode(req.cookies.access_token);
+
+    if (decodedToken.exp < Date.now() / 1000) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/auth/login",
+        },
+      };
+    }
+
     if (user.user_role !== "client") {
       return {
         redirect: {
