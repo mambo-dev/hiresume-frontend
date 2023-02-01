@@ -1,7 +1,13 @@
 import axios from "axios";
+import Link from "next/link";
 import React, { useState } from "react";
 import { error } from "../../../../pages/auth/signup";
 import SidePanel from "../side-panel";
+
+function truncate(str: string, maxLength: number) {
+  if (str.length <= maxLength) return str;
+  return str.substring(0, maxLength - 3) + "...";
+}
 
 export default function Job({ job, user, token }: any) {
   const [open, setOpen] = useState(false);
@@ -42,10 +48,13 @@ export default function Job({ job, user, token }: any) {
     }
   };
   return (
-    <div className="w-full bg-white shadow-md rounded border py-2 px-2 flex flex-col gap-y-4 border border-slate-200">
+    <div className="w-full bg-white  rounded border py-2 px-2 flex flex-col gap-y-4 shadow border border-slate-300">
       <div className="w-full h-1/4 flex items-center justify-between">
-        <h1 className=" font-semibold text-slate-800"> {job?.job_title} </h1>
-        {user.user_role === "client" && (
+        <h1 className=" font-semibold text-slate-800 first-letter:uppercase">
+          {" "}
+          {job?.job_title}{" "}
+        </h1>
+        {user.user_role === "client" ? (
           <span
             className={`p-1 px-2 rounded-full text-sm font-semibold  ${
               job?.job_completion_status
@@ -54,6 +63,10 @@ export default function Job({ job, user, token }: any) {
             } `}
           >
             {job?.job_completion_status ? "complete" : "incomplete"}
+          </span>
+        ) : (
+          <span className="p-1 px-4 rounded-full text-sm font-semibold  bg-teal-300 text-white font-semibold first-letter:uppercase">
+            full time
           </span>
         )}
       </div>
@@ -69,6 +82,18 @@ export default function Job({ job, user, token }: any) {
           {job?.job_level}
         </p>
       </div>
+      {user.user_role === "freelancer" && (
+        <div className="flex h-1/4 justify-between items-center xs:flex-wrap sm:flex-nowrap">
+          <p className="font-medium text-slate-800 first-letter:uppercase truncate">
+            {job.job_description}
+            <Link href={`/job/${job.id}`}>
+              <p className="text-blue-500 font-bold text-sm hover:underline">
+                more
+              </p>
+            </Link>
+          </p>
+        </div>
+      )}
       <div className="font-bold h-1/4 text-slate-900">
         {job?.job_hourly_to === 0 ? (
           <p>
@@ -142,7 +167,7 @@ export default function Job({ job, user, token }: any) {
         <div className="w-full h-1/4 flex items-center flex-wrap gap-y-2 justify-end">
           <button
             onClick={() => setOpen(true)}
-            className=" bg-teal-100 focus:bg-teal-300 inline-flex items-center justify-center gap-x-2 py-2 px-3.5 rounded text-teal-900 font-semibold hover:bg-opacity-50 "
+            className=" bg-teal-100 focus:ring-2 focus:ring-offset-1 focus:ring-teal-200 focus:bg-teal-300 inline-flex items-center justify-center gap-x-2 py-2 px-3.5 rounded text-teal-900 font-semibold hover:bg-opacity-50 "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

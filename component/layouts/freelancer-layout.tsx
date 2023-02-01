@@ -101,7 +101,7 @@ export default function FreelancerLayout({ children }: any) {
             <Menu
               open={menuOpen}
               setOpen={setMenuOpen}
-              className="outline-none w-10 h-10 rounded-full "
+              className="outline-none w-10 h-10 rounded-full z-10 "
             >
               <motion.ul
                 initial={{ opacity: 0 }}

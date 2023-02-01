@@ -4,6 +4,7 @@ import useDebounce from "../../../hooks/debounce";
 import useForm from "../../../hooks/form";
 import { error } from "../../../pages/auth/signup";
 import SearchBox from "../../utils/form/search-box";
+import AddSkills from "./add-skills";
 
 const myHeaders = new Headers();
 myHeaders.append("apikey", process.env.NEXT_PUBLIC_API_KEY || "");
@@ -34,6 +35,8 @@ export default function CreateForm({ token }: any) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
+  const [skill, setSkill] = useState(false);
+  const [created, setCreated] = useState(false);
 
   const submitAxios = async () => {
     try {
@@ -56,6 +59,7 @@ export default function CreateForm({ token }: any) {
 
       if (createJob) {
         setLoading(false);
+        setCreated(true);
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
@@ -90,175 +94,199 @@ export default function CreateForm({ token }: any) {
 
   return (
     //@ts-ignore
-    <form onSubmit={handleSubmit} className="flex flex-col gap-y-2">
-      <div className="flex flex-col w-full gap-y-2">
-        <label className="font-semibold text-sm text-teal-700">Title</label>
-        <input
-          type="text"
-          name="job_title"
-          onChange={handleChange}
-          value={values.job_title}
-          placeholder="React Node Js developer needed"
-          className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
-        />
-      </div>
-      <div className="flex flex-col w-full gap-y-2">
-        <label className="font-semibold text-sm text-teal-700">
-          Description
-        </label>
-        <textarea
-          name="job_description"
-          onChange={handleChange}
-          value={values.job_description}
-          placeholder="enter description of your job"
-          className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
-        />
-      </div>
-      <div className="flex flex-col w-full gap-y-2">
-        <label className="font-semibold text-sm text-teal-700">length</label>
-        <input
-          type="text"
-          name="job_length"
-          onChange={handleChange}
-          value={values.job_length}
-          placeholder="one month, two months..."
-          className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
-        />
-      </div>
-      <div className="flex flex-col w-full gap-y-2">
-        <p className="font-semibold text-sm text-teal-700">paying rate as</p>
-        <div className="flex gap-x-2 ">
-          <div className="flex items-center justify-between gap-x-2">
-            <input
-              value="hourly"
-              onChange={() => {
-                setHourly(true);
-                setFixed(false);
-              }}
-              name="role"
-              type="radio"
-              className="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-200 "
-            />
-            <label
-              htmlFor="push-everything"
-              className=" text-sm font-bold  text-teal-700"
-            >
-              hourly
-            </label>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <input
-              onChange={() => {
-                setHourly(false);
-                setFixed(true);
-              }}
-              value="fixed"
-              name="role"
-              type="radio"
-              className="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-200"
-            />
-            <label
-              htmlFor="push-everything"
-              className=" text-sm font-bold  text-teal-700"
-            >
-              fixed
-            </label>
-          </div>
-        </div>
-      </div>
-      {hourly && (
-        <div className="flex flex-col w-full gap-y-2">
+
+    <div className="flex flex-col ">
+      {skill ? (
+        <AddSkills />
+      ) : (
+        //@ts-ignore
+        <form onSubmit={handleSubmit} className="flex flex-col gap-y-2">
           <div className="flex flex-col w-full gap-y-2">
-            <label className="font-semibold text-sm text-teal-700">
-              paid hourly from
-            </label>
+            <label className="font-semibold text-sm text-teal-700">Title</label>
             <input
-              type="number"
-              name="job_hourly_from"
+              type="text"
+              name="job_title"
               onChange={handleChange}
-              value={values.job_hourly_from}
+              value={values.job_title}
+              placeholder="React Node Js developer needed"
               className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
             />
           </div>
           <div className="flex flex-col w-full gap-y-2">
             <label className="font-semibold text-sm text-teal-700">
-              paid hourly to
+              Description
             </label>
-            <input
-              type="number"
-              name="job_hourly_to"
+            <textarea
+              name="job_description"
               onChange={handleChange}
-              value={values.job_hourly_to}
+              value={values.job_description}
+              placeholder="enter description of your job"
               className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
             />
           </div>
-        </div>
-      )}{" "}
-      {fixed && (
-        <div className="flex flex-col w-full gap-y-2">
-          <label className="font-semibold text-sm text-teal-700">
-            fixed price
-          </label>
-          <input
-            type="number"
-            name="job_fixed_price"
-            onChange={handleChange}
-            value={values.job_fixed_price}
-            className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
-          />
-        </div>
-      )}
-      <div className="flex flex-col w-full gap-y-2">
-        <label className="font-semibold text-sm text-teal-700">job level</label>
-        <select
-          id="job_level"
-          name="job_level"
-          onChange={handleChange}
-          value={values.job_level}
-          autoComplete="level"
-          defaultValue="entry"
-          className=" py-2 px-1 rounded bg-white  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
-        >
-          {["entry", "intermerdiate", "experienced"].map(
-            (level: string, index: number) => (
-              <option key={index}> {level} </option>
-            )
+          <div className="flex flex-col w-full gap-y-2">
+            <label className="font-semibold text-sm text-teal-700">
+              length
+            </label>
+            <input
+              type="text"
+              name="job_length"
+              onChange={handleChange}
+              value={values.job_length}
+              placeholder="one month, two months..."
+              className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+            />
+          </div>
+          <div className="flex flex-col w-full gap-y-2">
+            <p className="font-semibold text-sm text-teal-700">
+              paying rate as
+            </p>
+            <div className="flex gap-x-2 ">
+              <div className="flex items-center justify-between gap-x-2">
+                <input
+                  value="hourly"
+                  onChange={() => {
+                    setHourly(true);
+                    setFixed(false);
+                  }}
+                  name="role"
+                  type="radio"
+                  className="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-200 "
+                />
+                <label
+                  htmlFor="push-everything"
+                  className=" text-sm font-bold  text-teal-700"
+                >
+                  hourly
+                </label>
+              </div>
+              <div className="flex items-center gap-x-2">
+                <input
+                  onChange={() => {
+                    setHourly(false);
+                    setFixed(true);
+                  }}
+                  value="fixed"
+                  name="role"
+                  type="radio"
+                  className="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-200"
+                />
+                <label
+                  htmlFor="push-everything"
+                  className=" text-sm font-bold  text-teal-700"
+                >
+                  fixed
+                </label>
+              </div>
+            </div>
+          </div>
+          {hourly && (
+            <div className="flex flex-col w-full gap-y-2">
+              <div className="flex flex-col w-full gap-y-2">
+                <label className="font-semibold text-sm text-teal-700">
+                  paid hourly from
+                </label>
+                <input
+                  type="number"
+                  name="job_hourly_from"
+                  onChange={handleChange}
+                  value={values.job_hourly_from}
+                  className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+                />
+              </div>
+              <div className="flex flex-col w-full gap-y-2">
+                <label className="font-semibold text-sm text-teal-700">
+                  paid hourly to
+                </label>
+                <input
+                  type="number"
+                  name="job_hourly_to"
+                  onChange={handleChange}
+                  value={values.job_hourly_to}
+                  className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+                />
+              </div>
+            </div>
+          )}{" "}
+          {fixed && (
+            <div className="flex flex-col w-full gap-y-2">
+              <label className="font-semibold text-sm text-teal-700">
+                fixed price
+              </label>
+              <input
+                type="number"
+                name="job_fixed_price"
+                onChange={handleChange}
+                value={values.job_fixed_price}
+                className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+              />
+            </div>
           )}
-        </select>
-      </div>
-      {loading ? (
+          <div className="flex flex-col w-full gap-y-2">
+            <label className="font-semibold text-sm text-teal-700">
+              job level
+            </label>
+            <select
+              id="job_level"
+              name="job_level"
+              onChange={handleChange}
+              value={values.job_level}
+              autoComplete="level"
+              defaultValue="entry"
+              className=" py-2 px-1 rounded bg-white  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+            >
+              {["entry", "intermerdiate", "experienced"].map(
+                (level: string, index: number) => (
+                  <option key={index}> {level} </option>
+                )
+              )}
+            </select>
+          </div>
+          {loading ? (
+            <button
+              type="button"
+              disabled={true}
+              className="mt-2 inline-flex items-center justify-center bg-opacity-70 gap-x-2 shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+            >
+              <div
+                className="animate-spin border-b-2   border-l-2 inline-block w-5 h-5 border rounded-full"
+                role="status"
+              >
+                <span className="hidden">Loading...</span>
+              </div>
+              <span>loading...</span>
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="mt-2 inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+            >
+              create job
+            </button>
+          )}
+          {errors.length > 0 &&
+            errors.map((error: error) => {
+              <p className="font-bold text-sm text-red-500 m-auto mt-2">
+                {error.message}
+              </p>;
+            })}
+          {success && (
+            <p className="font-bold text-sm text-green-500 m-auto mt-2">
+              succesfully created job
+            </p>
+          )}
+        </form>
+      )}
+      {!skill && (
         <button
           type="button"
-          disabled={true}
-          className="mt-2 inline-flex items-center justify-center bg-opacity-70 gap-x-2 shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+          disabled={!created}
+          onClick={() => setSkill(true)}
+          className="w-fit ml-auto disabled:bg-opacity-50 mt-2 inline-flex items-center border border-slate-300 justify-center text-teal-600 shadow shadow-slate-200 bg-white rounded  text-gray-100  focus:shadow-md focus:shadow-slate-300 py-2 px-10"
         >
-          <div
-            className="animate-spin border-b-2   border-l-2 inline-block w-5 h-5 border rounded-full"
-            role="status"
-          >
-            <span className="hidden">Loading...</span>
-          </div>
-          <span>loading...</span>
-        </button>
-      ) : (
-        <button
-          type="submit"
-          className="mt-2 inline-flex items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
-        >
-          create job
+          add skills
         </button>
       )}
-      {errors.length > 0 &&
-        errors.map((error: error) => {
-          <p className="font-bold text-sm text-red-500 m-auto mt-2">
-            {error.message}
-          </p>;
-        })}
-      {success && (
-        <p className="font-bold text-sm text-green-500 m-auto mt-2">
-          succesfully created job
-        </p>
-      )}
-    </form>
+    </div>
   );
 }
