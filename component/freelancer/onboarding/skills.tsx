@@ -13,24 +13,25 @@ type skill = {
 };
 
 export default function Skills({ token, data }: any) {
-  const [selected, setSelected] = useState(0);
-  const [openBox, setOpenBox] = useState(false);
-
-  const [skills, setSkills] = useState<skill[]>([]);
-  const [querySkills, setQuerySkills] = useState<skill[]>([]);
+  const [selectedSkill, setSelectedSkill] = useState<string>("");
+  const [created, setCreated] = useState(false);
   const [query, setQuery] = useState("");
-  const [selectedValue, setSelectedValues] = useState("");
-  const [errors, setErrors] = useState<error[]>([]);
-
+  const [results, setResults] = useState([]);
+  const [skills, setSkills] = useState<string[]>([]);
+  const [addLoading, setAddLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const debouncedSearch = useDebounce(query, 500);
-
   useEffect(() => {
     if (debouncedSearch) {
       axios
-        .get(`http://localhost:4000/freelancers/getSkills?skill_name=${query}`)
+        .get(`https://api.apilayer.com/skills?q=${query}`, {
+          method: "GET",
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_API_KEY,
+          },
+        })
         .then((response) => {
-          setQuerySkills(response.data);
-          setOpenBox(true);
+          setResults(response.data);
           console.log(response.data);
         })
         .catch((error) => {
@@ -39,76 +40,46 @@ export default function Skills({ token, data }: any) {
     }
   }, [debouncedSearch]);
 
-  const { handleSubmitResponse, loading, response, success } = useAxios(
-    "freelancers/skills",
-    setErrors,
-    errors,
-    "post",
-    {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  console.log(skills);
+  function addSkills() {
+    setLoading(true);
+  }
+
   return (
     <div className="w-full h-full py-4 px-2">
-      <div className="w-full  flex flex-col gap-y-4 items-center justify-center">
+      <div className="w-full md:w-3/4 m-auto flex flex-col gap-y-4 items-center justify-center">
         <span className="w-3/4 flex items-center justify-center  text-teal-600">
           lets add some of your skills to complete the profile
         </span>
 
-        <div className=" w-full md:w-1/2 relative  m-auto">
-          <div className="flex flex-col w-full">
-            <label>search skill</label>
-            <input
-              type="text"
-              name="query"
-              placeholder="start typing to see availbale skills"
-              onChange={(e) => setQuery(e.target.value)}
-              value={query}
-              className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
-            />
-          </div>
+        <QuerySkills
+          addLoading={addLoading}
+          query={query}
+          results={results}
+          setQuery={setQuery}
+          setAddLoading={setAddLoading}
+          setSkills={setSkills}
+          skills={skills}
+        />
 
-          {query.length > 0 && (
-            <div className="bg-white py-2 shadow-md rounded border border-gray-200 flex items-center flex-col rounded w-full absolute top-[110%] right-0 left-0 ">
-              {querySkills.map((skill) => (
-                <button
-                  onClick={() => {
-                    setOpenBox(false);
-                    setSkills([...skills, skill]);
-                    setQuery("");
-                  }}
-                  className="py-3 w-full px-2 inline-flex items-center justify-start hover:bg-teal-500  hover:text-white"
-                >
-                  {skill.skill_name}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
         {skills.length > 0 && (
-          <div className=" grid w-full md:w-3/4 grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 p-2 border rounded shadow-inner bg-slate-50  ">
-            {skills.map((skill: any) => (
-              <Tag
-                key={skill.id}
-                data={skills}
-                title={skill.skill_name}
-                setData={setSkills}
-                selected={selected}
-                button={
+          <code className="w-full  py-2 relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 px-1 rounded bg-white  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 ">
+            {skills.map((skill: string, index: number) => {
+              return (
+                <span
+                  key={index}
+                  className=" relative focus:ring-1 ring-offset-1 ring-green-700 bg-green-200 text-green-900 rounded-full py-2 px-6 flex items-center justify-center font-semibold"
+                >
+                  {skill}
+
                   <button
-                    className="w-5 h-5"
+                    type="button"
                     onClick={() => {
-                      setSelected(() => {
-                        setSkills(
-                          skills.filter((skill: any) => skill.id !== selected)
-                        );
-                        return skill.id;
-                      });
+                      setSkills(
+                        skills.filter((filterSkill) => filterSkill !== skill)
+                      );
+                      setSelectedSkill("");
                     }}
+                    className="p-1 w-6 h-6  rounded-full absolute top-2 bottom-0 right-2 bg-green-800 shadow focus:ring-1 focus:ring-green-600 ring-offset-2 shadow-green-800 focus:border border-green-600 outline-none inline-flex items-center justify-center"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -116,55 +87,123 @@ export default function Skills({ token, data }: any) {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="w-6 h-6 text-gray-500"
+                      className="w-4 h-4 text-white font-bold"
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
                   </button>
-                }
-              />
-            ))}
-          </div>
+                </span>
+              );
+            })}
+          </code>
         )}
-        <div className="w-full flex items-center justify-center">
-          {loading ? (
-            <button
-              type="button"
-              disabled={true}
-              className="inline-flex w-32 m-auto   items-center justify-center bg-opacity-70 gap-x-2 shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 "
+        {loading ? (
+          <button
+            type="button"
+            disabled={true}
+            className="mt-2 inline-flex items-center justify-center bg-opacity-70 gap-x-2 shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+          >
+            <div
+              className="animate-spin border-b-2   border-l-2 inline-block w-5 h-5 border rounded-full"
+              role="status"
             >
-              <div
-                className="animate-spin border-b-2   border-l-2 inline-block w-5 h-5 border rounded-full"
-                role="status"
-              >
-                <span className="hidden">Loading...</span>
-              </div>
-              <span>loading...</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                setSkills([]);
-                handleSubmitResponse({
-                  skills: skills.map((skill) => {
-                    return {
-                      skill_id: skill.id,
-                      skill_name: skill.skill_name,
-                    };
-                  }),
-                });
-              }}
-              className="inline-flex w-32 items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 "
-            >
-              add skills
-            </button>
-          )}
-        </div>
+              <span className="hidden">Loading...</span>
+            </div>
+            <span>loading...</span>
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={skills.length < 1}
+            onClick={addSkills}
+            className="mt-2 inline-flex disabled:bg-opacity-20 items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+          >
+            add skills
+          </button>
+        )}
       </div>
     </div>
+  );
+}
+
+type SkillsProp = {
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  query: string;
+  setSkills: React.Dispatch<React.SetStateAction<string[]>>;
+  results: any;
+  addLoading: boolean;
+  setAddLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  skills: string[];
+};
+function QuerySkills({
+  setQuery,
+  query,
+  setSkills,
+  results,
+  addLoading,
+  setAddLoading,
+  skills,
+}: SkillsProp) {
+  return (
+    <>
+      <div className="flex flex-col w-full gap-y-4">
+        <label className="font-semibold text-sm text-teal-700">add skill</label>
+        <input
+          type="text"
+          name="query"
+          placeholder="start typing to see availbale skills"
+          onChange={(e) => setQuery(e.target.value)}
+          value={query}
+          className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
+        />
+      </div>
+      {query.length > 0 && (
+        <div className="w-full relative flex flex-col gap-y-1 bg-white shadow border border-slate-300">
+          {results.map((result: any, index: number) => {
+            return (
+              <div
+                key={index}
+                className="flex  group items-center hover:bg-teal-200  justify-between px-2 py-3 bg-slate-50  "
+              >
+                <span className="w-full text-sm font-semibold text-teal-700 ">
+                  {addLoading ? "adding..." : result}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAddLoading(true);
+                    setSkills([...skills, result]);
+                    setQuery("");
+                    setTimeout(() => {
+                      setAddLoading(false);
+                    }, 1500);
+                  }}
+                  className="outline-none mr-4 inline-flex items-center justify-center w-9 h-9 p-2 rounded-full bg-slate-200/20 focus:bg-slate-200/60 group-hover:bg-teal-900/40 text-slate-900"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 "
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 }

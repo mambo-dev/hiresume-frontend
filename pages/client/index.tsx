@@ -33,7 +33,7 @@ export default function Client({ data }: any) {
     <div className="w-full h-full">
       {jobs?.length <= 0 ? (
         <div className="w-full h-full  flex  items-center justify-center">
-          <div className="w-fit py-10 shadow px-4 border border-gray-200 rounded  flex items-center flex-col gap-y-2">
+          <div className="w-fit py-10 shadow px-4 border border-slate-300 rounded  flex items-center flex-col gap-y-2">
             <p className="font-bold text-teal-900">
               you curently have no jobs start creating
             </p>

@@ -65,8 +65,8 @@ export default function Freelancer<NextPageWithLayout>({ data }: any) {
                 />
               </svg>
             </span>{" "}
-            <p>{user.profile.profile_firstname}</p>{" "}
-            <p>{user.profile.profile_secondname}</p>
+            <p>{user?.profile.profile_firstname}</p>{" "}
+            <p>{user?.profile.profile_secondname}</p>
           </div>
           <div className="flex items-center justify-center gap-x-2 py-3 px-1 ">
             <span>
@@ -109,7 +109,7 @@ export default function Freelancer<NextPageWithLayout>({ data }: any) {
                 />
               </svg>
             </span>{" "}
-            <p>{user.user_country}</p>
+            <p>{user?.user_country}</p>
           </div>
           <div className="flex items-center justify-center gap-x-2  py-3 px-1 ">
             <span>
@@ -129,7 +129,7 @@ export default function Freelancer<NextPageWithLayout>({ data }: any) {
               </svg>
             </span>{" "}
             <p>
-              {user.Freelancer.freelancer_availability
+              {user?.Freelancer.freelancer_availability
                 ? "available for work "
                 : "busy at the moment"}
             </p>

@@ -38,6 +38,7 @@ export default function CreateForm({ token }: any) {
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const [skills, setSkills] = useState<string[]>([]);
+  const [selectedSkill, setSelectedSkill] = useState<string>("");
   const [created, setCreated] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -55,7 +56,6 @@ export default function CreateForm({ token }: any) {
         })
         .then((response) => {
           setResults(response.data);
-          console.log(response.data);
         })
         .catch((error) => {
           console.log(error);
@@ -66,6 +66,7 @@ export default function CreateForm({ token }: any) {
   const submitAxios = async () => {
     try {
       setLoading(true);
+      console.log(skills);
       const createJob = await axios.post(
         `http://localhost:4000/clients/create-job`,
         {
@@ -271,15 +272,39 @@ export default function CreateForm({ token }: any) {
           skills={skills}
         />
         {skills.length > 0 && (
-          <code className=" py-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 px-1 rounded bg-white  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 ">
+          <code className=" py-2 relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 px-1 rounded bg-white  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 ">
             {skills.map((skill: string, index: number) => {
               return (
                 <span
                   key={index}
-                  className="bg-green-200 text-green-900 rounded-full py-2 px-6 flex items-center justify-center font-semibold"
+                  className=" relative bg-green-200 text-green-900 rounded-full py-2 px-6 flex items-center justify-center font-semibold"
                 >
-                  {" "}
                   {skill}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedSkill(skill);
+                      setSkills(
+                        skills.filter((skill) => skill === selectedSkill)
+                      );
+                    }}
+                    className="p-1 w-6 h-6  rounded-full absolute top-2 bottom-0 right-2 bg-green-800 shadow focus:ring-1 focus:ring-green-600 ring-offset-2 shadow-green-800 focus:border border-green-600 outline-none inline-flex items-center justify-center"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-4 h-4 text-white font-bold"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
                 </span>
               );
             })}
@@ -367,13 +392,14 @@ function Skills({
                   {addLoading ? "adding..." : result}
                 </span>
                 <button
+                  type="button"
                   onClick={() => {
                     setAddLoading(true);
                     setSkills([...skills, result]);
+                    setQuery("");
                     setTimeout(() => {
                       setAddLoading(false);
-                      setQuery("");
-                    }, 3000);
+                    }, 1500);
                   }}
                   className="outline-none mr-4 inline-flex items-center justify-center w-9 h-9 p-2 rounded-full bg-slate-200/20 focus:bg-slate-200/60 group-hover:bg-teal-900/40 text-slate-900"
                 >
