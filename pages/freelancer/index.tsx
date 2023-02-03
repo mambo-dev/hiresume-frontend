@@ -184,8 +184,6 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
       }
     );
 
-    console.log(getJobs.data);
-
     return {
       props: {
         data: {
