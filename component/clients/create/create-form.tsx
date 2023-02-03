@@ -66,7 +66,7 @@ export default function CreateForm({ token }: any) {
   const submitAxios = async () => {
     try {
       setLoading(true);
-      console.log(skills);
+
       const createJob = await axios.post(
         `http://localhost:4000/clients/create-job`,
         {
@@ -283,9 +283,8 @@ export default function CreateForm({ token }: any) {
                   <button
                     type="button"
                     onClick={() => {
-                      setSelectedSkill(skill);
                       setSkills(
-                        skills.filter((skill) => skill === selectedSkill)
+                        skills.filter((filterSkill) => filterSkill === skill)
                       );
                     }}
                     className="p-1 w-6 h-6  rounded-full absolute top-2 bottom-0 right-2 bg-green-800 shadow focus:ring-1 focus:ring-green-600 ring-offset-2 shadow-green-800 focus:border border-green-600 outline-none inline-flex items-center justify-center"

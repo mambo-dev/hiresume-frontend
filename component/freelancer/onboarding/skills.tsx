@@ -14,7 +14,7 @@ type skill = {
 
 export default function Skills({ token, data }: any) {
   const [selectedSkill, setSelectedSkill] = useState<string>("");
-  const [created, setCreated] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [skills, setSkills] = useState<string[]>([]);
@@ -40,8 +40,35 @@ export default function Skills({ token, data }: any) {
     }
   }, [debouncedSearch]);
 
-  function addSkills() {
+  function addSkill(skill: string) {
+    //add-or-attach-skill-freelancer/:skill_name
     setLoading(true);
+    axios
+      .get(
+        `http://localhost:4000/freelancers/add-or-attach-skill-freelancer/${skill}`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {})
+      .catch((error) => {});
+  }
+
+  function handleSubmit() {
+    skills.forEach((skill: string, index: number) => {
+      addSkill(skill);
+
+      if (index === skills.length - 1) {
+        setLoading(false);
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 3000);
+      }
+    });
   }
 
   return (
@@ -119,11 +146,17 @@ export default function Skills({ token, data }: any) {
           <button
             type="submit"
             disabled={skills.length < 1}
-            onClick={addSkills}
-            className="mt-2 inline-flex disabled:bg-opacity-20 items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
+            onClick={handleSubmit}
+            className="mt-2 inline-flex disabled:bg-teal-600/20 items-center justify-center shadow shadow-teal-500 bg-teal-600 rounded  text-gray-100  focus:shadow-md focus:shadow-teal-400 p-2 w-full "
           >
             add skills
           </button>
+        )}
+
+        {success && (
+          <span className="w-3/4 flex items-center justify-center  text-green-500 font-semibold text-sm">
+            skills have been addedd
+          </span>
         )}
       </div>
     </div>

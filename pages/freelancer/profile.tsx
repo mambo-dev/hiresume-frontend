@@ -551,12 +551,21 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
           </div>
           <div className="flex flex-col gap-y-2 items-start justify-start w-full">
             <span className="text-2xl text-teal-900 font-bold">Skills</span>
-            <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-2">
-              {profile.returnSkill.map((skill: any) => (
-                <span className="bg-gray-200 font-semibold text-gray-900 py-2 px-1 rounded shadow">
-                  {skill.skill.skill_name}
-                </span>
-              ))}
+            <div className="w-full ">
+              {profile.returnSkill.length > 0 && (
+                <code className="w-full  py-2 relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 px-1 rounded bg-white  border border-gray-300 focus:outline-none focus:ring-2 focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 ">
+                  {profile.returnSkill.map((skill: any, index: number) => {
+                    return (
+                      <span
+                        key={index}
+                        className=" relative focus:ring-1 ring-offset-1 ring-green-700 bg-green-200 text-green-900 rounded-full py-2 px-6 flex items-center justify-center font-semibold"
+                      >
+                        {skill.skill.skill_name}
+                      </span>
+                    );
+                  })}
+                </code>
+              )}
             </div>
           </div>
         </div>
