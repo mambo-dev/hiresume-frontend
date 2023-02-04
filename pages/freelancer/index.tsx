@@ -41,6 +41,7 @@ export default function Freelancer<NextPageWithLayout>({ data }: any) {
       component: <SearchJobs user={user} token={token} />,
     },
   };
+
   return (
     <div className="w-full flex items-center justify-center py-4">
       <div className="w-full md:w-[70%] mr-auto px-10 ">

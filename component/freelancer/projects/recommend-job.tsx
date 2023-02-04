@@ -31,7 +31,9 @@ export default function RecommendJob({ user, token }: any) {
 
   return (
     <div className=" w-full  m-auto grid grid-cols-1 gap-3 py-2 h-full ">
-      <button className="py-2 px10 ">refresh</button>
+      <button onClick={fetchJobs} className="py-2 px10 ">
+        refresh
+      </button>
       {jobs.map((job: any) => (
         <Job job={job} user={user} />
       ))}

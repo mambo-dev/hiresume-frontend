@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import useDebounce from "../../../hooks/debounce";
 import useForm from "../../../hooks/form";
@@ -44,6 +45,7 @@ export default function CreateForm({ token }: any) {
   const [results, setResults] = useState([]);
 
   const debouncedSearch = useDebounce(query, 500);
+  const router = useRouter();
 
   useEffect(() => {
     if (debouncedSearch) {
@@ -90,7 +92,8 @@ export default function CreateForm({ token }: any) {
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
-        }, 3000);
+          router.reload();
+        }, 1500);
       }
     } catch (error: any) {
       setLoading(false);
@@ -277,14 +280,14 @@ export default function CreateForm({ token }: any) {
               return (
                 <span
                   key={index}
-                  className=" relative bg-green-200 text-green-900 rounded-full py-2 px-6 flex items-center justify-center font-semibold"
+                  className="truncate relative bg-green-200 text-green-900 rounded-full py-2 px-6 flex items-center justify-center font-semibold"
                 >
                   {skill}
                   <button
                     type="button"
                     onClick={() => {
                       setSkills(
-                        skills.filter((filterSkill) => filterSkill === skill)
+                        skills.filter((filterSkill) => filterSkill !== skill)
                       );
                     }}
                     className="p-1 w-6 h-6  rounded-full absolute top-2 bottom-0 right-2 bg-green-800 shadow focus:ring-1 focus:ring-green-600 ring-offset-2 shadow-green-800 focus:border border-green-600 outline-none inline-flex items-center justify-center"
