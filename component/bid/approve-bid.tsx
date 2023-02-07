@@ -15,12 +15,15 @@ export default function ApproveBid({ token, bid }: BidProps) {
   const submitAxios = () => {
     setLoading(true);
     axios
-      .get(`${process.env.NEXT_PUBLIC_SERVER_LINK}/approve-bid/${bid.bid_id}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        `${process.env.NEXT_PUBLIC_SERVER_LINK}/clients/approve-bid/${bid.id}`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         setLoading(false);
         setSuccess(true);
@@ -47,10 +50,13 @@ export default function ApproveBid({ token, bid }: BidProps) {
   return (
     //@ts-ignore
     <div className="w-full h-fit py-4 px-2">
-      <div className="w-full py-4">
-        <div>
-          <p>{bid.bid_rate}</p>
-          <p>{bid.bid_coverletter}</p>
+      <div className="w-full py-4 flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-4">
+          <span className="flex gap-x-4">
+            <strong>freelancer bid :</strong>
+            <p>{bid.bid_rate}$</p>
+          </span>
+          <p className="text-sm">{bid.bid_coverletter}</p>
         </div>
         {loading ? (
           <button

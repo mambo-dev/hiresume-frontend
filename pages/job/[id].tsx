@@ -154,7 +154,7 @@ export default function Job({ data }: any) {
             </div>
           )}
         </div>
-        {user.user_role === "client" && (
+        {user.user_role === "client" && job.job_bid.length > 0 && (
           <ul className="py-2 border border-slate-300 rounded shadow">
             {job.job_bid.map((bid: any) => {
               return (
