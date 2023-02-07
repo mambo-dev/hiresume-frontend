@@ -2,6 +2,8 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useState } from "react";
 import { error } from "../../../../pages/auth/signup";
+import Bid from "../../../bid/bid";
+import Modal from "../../../utils/modal";
 import SidePanel from "../side-panel";
 
 function truncate(str: string, maxLength: number) {
@@ -48,7 +50,7 @@ export default function Job({ job, user, token }: any) {
     }
   };
   return (
-    <div className="w-full bg-white  rounded border py-2 px-2 flex flex-col gap-y-4 shadow border border-slate-300">
+    <div className="w-full bg-white  rounded  py-2 px-2 flex flex-col gap-y-4 shadow border border-slate-300">
       <div className="w-full h-1/4 flex items-center justify-between">
         <h1 className=" font-semibold text-slate-800 first-letter:uppercase">
           {" "}
@@ -65,7 +67,7 @@ export default function Job({ job, user, token }: any) {
             {job?.job_completion_status ? "complete" : "incomplete"}
           </span>
         ) : (
-          <span className="p-1 px-4 rounded-full text-sm font-semibold  bg-teal-300 text-white font-semibold first-letter:uppercase">
+          <span className="p-1 px-4 rounded-full text-sm  bg-teal-300 text-white font-semibold first-letter:uppercase">
             full time
           </span>
         )}
@@ -111,6 +113,7 @@ export default function Job({ job, user, token }: any) {
           </span>
         )}
       </div>
+
       {user.user_role === "client" && (
         <div className="w-full h-1/4 flex items-center flex-wrap gap-y-2 justify-between">
           <button
@@ -160,6 +163,24 @@ export default function Job({ job, user, token }: any) {
             </svg>{" "}
             {loading ? "deleting..." : success ? "deleted" : "delete"}
           </button>
+          <Link href={`/job/${job.id}`}>
+            <button className="text-blue-500 font-bold text-sm hover:underline">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
+                />
+              </svg>
+            </button>
+          </Link>
         </div>
       )}
 
@@ -183,6 +204,9 @@ export default function Job({ job, user, token }: any) {
                 d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
               />
             </svg>
+            <Modal isOpen={open} setIsOpen={setOpen}>
+              <Bid job_id={job.id} token={token} />
+            </Modal>
             apply
           </button>
         </div>
