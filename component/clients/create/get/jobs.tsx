@@ -96,7 +96,7 @@ export default function Job({ job, user, token }: any) {
           </p>
         </div>
       )}
-      <div className="font-bold h-1/4 text-slate-900">
+      <div className="font-bold h-1/4 text-slate-900 flex justify-between">
         {job?.job_hourly_to === 0 ? (
           <p>
             {" "}
@@ -104,12 +104,14 @@ export default function Job({ job, user, token }: any) {
             {job?.job_fixed_price}
           </p>
         ) : (
-          <span>
-            <strong className="font-bold text-slate-700">from: </strong> $
-            {job?.job_hourly_from} -{" "}
-            <strong className="font-bold text-slate-700"> to: </strong>$
-            {job?.job_hourly_to} {}
-            per hour
+          <span className="flex justify-between">
+            <span>
+              <strong className="font-bold text-slate-700">from: </strong> $
+              {job?.job_hourly_from} -{" "}
+              <strong className="font-bold text-slate-700"> to: </strong>$
+              {job?.job_hourly_to} {}
+              per hour
+            </span>
           </span>
         )}
       </div>

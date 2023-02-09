@@ -6,10 +6,11 @@ import { useState } from "react";
 import Modal from "../../component/utils/modal";
 import Bid from "../../component/bid/bid";
 import ApproveBid from "../../component/bid/approve-bid";
+import Link from "next/link";
 
 export default function Job({ data }: any) {
   const { user, job, error, token } = data;
-  console.log(job);
+
   const [open, setOpen] = useState(false);
   const [openBid, setOpenBid] = useState(false);
   const router = useRouter();
@@ -154,12 +155,21 @@ export default function Job({ data }: any) {
             </div>
           )}
         </div>
+        {user.user_role === "client" && (
+          <div className="ml-auto">
+            <Link href={`/client/bids/accepted-bids/${job.id}`}>
+              <span className="text-blue-500 font-semibold text-sm hover:underline">
+                view accepted bids
+              </span>
+            </Link>
+          </div>
+        )}
         {user.user_role === "client" && job.job_bid.length > 0 && (
           <ul className="py-2 border border-slate-300 rounded shadow">
             {job.job_bid.map((bid: any) => {
               return (
                 <>
-                  <li className="flex flex-col  py-2 px-1 gap-y-2">
+                  <li key={bid.id} className="flex flex-col  py-2 px-1 gap-y-2">
                     {truncate(bid.bid_coverletter, 100)}
                     <button
                       onClick={() => setOpenBid(true)}
@@ -190,7 +200,7 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
   try {
     const { req } = context;
     const { id } = context.query;
-    console.log(id);
+
     const user = JSON.parse(req.cookies.user);
     if (!req.cookies.access_token) {
       return {
