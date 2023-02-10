@@ -5,30 +5,28 @@ import useForm from "../../hooks/form";
 import { error } from "../../pages/auth/signup";
 
 type Contract = {
-  job_id: number;
-  bid_id: number;
+  contract?: any;
 };
-export default function CreateContract({ job_id, bid_id }: Contract) {
+export default function UpdateContract({ contract }: Contract) {
   const { token } = useAuth();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<error[]>([]);
   const initialValues = {
-    details: "",
-    client_signed: "",
-    date_signed: "",
-    end: "",
-    start: "",
+    details: contract.contract_details,
+    client_signed: contract.contract_client_signed,
+
+    end: contract.contract_end,
+    start: contract.contract_start,
   };
   const submitAxios = async () => {
     try {
       setLoading(true);
 
       const createContract = await axios.post(
-        `http://localhost:4000/clients/create-contract/${job_id}/${bid_id}`,
+        `http://localhost:4000/clients/update-contract/${contract.id}`,
         {
           ...values,
-          date_signed: new Date(values.date_signed),
           end: new Date(values.end),
           start: new Date(values.start),
         },
@@ -92,18 +90,7 @@ export default function CreateContract({ job_id, bid_id }: Contract) {
             className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2  focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
           />
         </div>
-        <div className="flex flex-col w-full gap-y-2">
-          <label className="text-teal-500 text-sm font-medium">
-            contract signed on
-          </label>
-          <input
-            type="date"
-            name="date_signed"
-            onChange={handleChange}
-            value={values.date_signed}
-            className="py-2 px-1 rounded  border border-gray-300 focus:outline-none focus:ring-2  focus:border-teal-200 focus:shadow-sm focus:shadow-teal-200  focus:ring-teal-100 "
-          />
-        </div>
+
         <div className="flex flex-col w-full gap-y-2">
           <label className="text-teal-500 text-sm font-medium">
             contract start on
@@ -134,7 +121,7 @@ export default function CreateContract({ job_id, bid_id }: Contract) {
           type="submit"
           className="w-full disabled:bg-opacity-70 mt-2 font-bold text-white bg-teal-400 rounded shadow shadow-teal-200 py-2 px-1"
         >
-          {loading ? "loading..." : "create contract"}
+          {loading ? "loading..." : "update contract"}
         </button>
         {errors.length > 0 &&
           errors.map((error: error) => {
@@ -144,7 +131,7 @@ export default function CreateContract({ job_id, bid_id }: Contract) {
           })}
         {success && (
           <p className="font-bold text-sm text-green-500 m-auto mt-2">
-            succesfully created contract
+            succesfully updated contract
           </p>
         )}
       </form>

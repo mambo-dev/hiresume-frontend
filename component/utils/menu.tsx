@@ -32,7 +32,7 @@ export default function Menu({
       className={className}
     >
       <img
-        src="https://images.unsplash.com/photo-1672888560227-aaf9b90d480a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
+        src="/images/avatar.png"
         className="w-full h-full rounded-full"
         alt="profile"
       />

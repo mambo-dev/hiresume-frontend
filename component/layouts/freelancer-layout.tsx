@@ -206,7 +206,7 @@ export default function FreelancerLayout({ children }: any) {
             <div className="w-full h-[fit-content] flex justify-around ">
               <Link href="/freelancer/profile">
                 <img
-                  src="https://images.unsplash.com/photo-1672888560227-aaf9b90d480a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyMHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"
+                  src="/images/avatar.png"
                   className="w-12 h-12 rounded-full"
                   alt="profile"
                 />
@@ -272,7 +272,10 @@ export default function FreelancerLayout({ children }: any) {
               ))}
             </div>
             <div className="w-full flex justify-around">
-              <button className="inline-flex items-center justify-center shadow shadow-orange-500 bg-orange-600 rounded  text-gray-100  focus:shadow-md focus:shadow-orange-400 p-2 w-full ">
+              <button
+                onClick={logout}
+                className="inline-flex items-center justify-center shadow shadow-orange-500 bg-orange-600 rounded  text-gray-100  focus:shadow-md focus:shadow-orange-400 p-2 w-full "
+              >
                 Log out{" "}
               </button>
             </div>

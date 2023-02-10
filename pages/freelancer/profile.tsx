@@ -43,7 +43,7 @@ export default function Profile<NextPageWithLayout>({ data }: any) {
   const router = useRouter();
 
   const { success, profile } = data;
-  console.log(profile);
+
   useEffect(() => {
     setProfileSuccess(true);
     if (!success) {

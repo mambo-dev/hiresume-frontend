@@ -16,12 +16,12 @@ export default function Modal({ isOpen, setIsOpen, children }: Modal) {
     >
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
-      <div className="fixed inset-0 flex items-center justify-center p-4 h-screen">
+      <div className="fixed inset-0 flex items-center justify-center p-4 h-screen ">
         <motion.div
           initial={{ opacity: 0, x: 0 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" w-full  md:w-1/2 rounded bg-white h-[fit-content] overflow-y-auto "
+          className=" w-full  md:w-1/2 rounded bg-white h-fit overflow-y-auto "
         >
           <Dialog.Panel>{children}</Dialog.Panel>
         </motion.div>
